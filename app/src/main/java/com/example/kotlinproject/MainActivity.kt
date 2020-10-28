@@ -3,10 +3,8 @@ package com.example.kotlinproject
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlin.concurrent.thread
 
 /***
  * Kotlin 协程的使用
@@ -20,7 +18,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        createCoroutine()
+//        createCoroutine()
+        createCoroutineBlock()
     }
 
     /***
@@ -38,9 +37,22 @@ class MainActivity : AppCompatActivity() {
      */
     fun createCoroutine(){
         var job = GlobalScope.launch(Dispatchers.Main) {
-            var conntent = fetchData()
             Log.i("xiongliang","content")
         }
+
+        Log.i("xiongliang","11")
+        var thread1 = thread {  }
+    }
+
+    /**
+     * 通过runBlocking 创建协程
+     */
+    fun createCoroutineBlock(){
+        runBlocking {
+              delay(timeMillis = 1000L)
+             Log.i("xiongliang","111111")
+        }
+        Log.i("xiongliang","22222222")
     }
 
     /**
