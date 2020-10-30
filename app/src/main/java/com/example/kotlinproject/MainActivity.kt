@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         Log.i("xiongliang","11")
-        var thread1 = thread {  }
     }
 
     /**
@@ -54,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         }
         Log.i("xiongliang","22222222")
     }
+
+
 
     /**
      * suspend 关键字 -- 能够是协程执行暂停,等执行完毕后再返回结果,同时不会阻塞线程
