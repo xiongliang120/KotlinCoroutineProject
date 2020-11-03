@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
 //        createCoroutine3()
-        cancelCoroutine()
+//        cancelCoroutine()
+        cancelCoroutine2()
     }
 
     /***
@@ -86,6 +87,8 @@ class MainActivity : AppCompatActivity() {
                 Log.i("xiongliang", "A")
             }
         }
+
+
         Log.i("xiongliang", "hello work")
     }
 
@@ -105,8 +108,29 @@ class MainActivity : AppCompatActivity() {
         delay(1000)
         Log.i("xiongliang","111")
         job.cancelAndJoin()
-
     }
+
+    /**
+     * 协程取消,针对计算任务
+     */
+    fun cancelCoroutine2() = runBlocking {
+       var job = launch(Dispatchers.Default) {
+           var i =0
+           var startTime = System.currentTimeMillis()
+           while (isActive){
+               if(System.currentTimeMillis() >= startTime){
+                   Log.i("xiongliang","print i="+(i++))
+                   startTime += 500L
+               }
+           }
+       }
+       delay(1000)
+       job.cancelAndJoin()
+       Log.i("xiongliang","打印协程是否被删除")
+    }
+
+
+
 
     /**
      * suspend 关键字 -- 能够是协程执行暂停,等执行完毕后再返回结果,同时不会阻塞线程
