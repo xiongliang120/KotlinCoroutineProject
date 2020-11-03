@@ -1,5 +1,9 @@
 package com.example.kotlinproject
 
+import android.util.Log
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -10,8 +14,27 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
-    @Test
+
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+
     }
+
+    /**
+     * 批量创建协程
+     */
+    @Test
+    fun createCoroutine3() {
+        runBlocking {
+            for (i in 0..100){
+                launch {
+                    delay(1000)
+                    assert(true){
+                        "A"
+                    }
+                }
+            }
+//            Log.i("xiongliang","hello work")
+        }
+    }
+
 }

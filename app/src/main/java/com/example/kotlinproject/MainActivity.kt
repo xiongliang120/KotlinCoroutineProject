@@ -19,7 +19,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 //        createCoroutine()
-        createCoroutineBlock()
+//        createCoroutineBlock()
+//        createCoroutinePublicScope()
+        createCoroutine3()
     }
 
     /***
@@ -35,30 +37,65 @@ class MainActivity : AppCompatActivity() {
      *  newSingleThreadContext -- 使用新的线程
      *
      */
-    fun createCoroutine(){
+    fun createCoroutine() {
         var job = GlobalScope.launch(Dispatchers.Main) {
-            Log.i("xiongliang","content")
+            delay(3000)
+            Log.i("xiongliang", "content")
         }
 
-        Log.i("xiongliang","11")
-        var thread1 = thread {  }
+
+        Log.i("xiongliang", "11")
     }
 
     /**
      * 通过runBlocking 创建协程
      */
-    fun createCoroutineBlock(){
+    fun createCoroutineBlock() {
         runBlocking {
-              delay(timeMillis = 1000L)
-             Log.i("xiongliang","111111")
+            delay(timeMillis = 1000L)
+            Log.i("xiongliang", "111111")
+
+            coroutineScope {
+
+            }
         }
-        Log.i("xiongliang","22222222")
+        Log.i("xiongliang", "22222222")
+
+
+
     }
+
+    /**
+     * 外部协程会等待起作用域内启动的协程执行完毕后才会执行完成
+     */
+    fun createCoroutinePublicScope() =
+        GlobalScope.launch {
+            Log.i("xiongliang", "111111")
+            GlobalScope.launch {
+                delay(2000)
+                Log.i("xiongliang", "222222222222")
+            }
+            Log.i("xiongliang", "333333333")
+        }
+
+    /**
+     * 批量创建协程
+     */
+   fun createCoroutine3() = runBlocking {
+        repeat (10){
+            launch {
+                delay(1000)
+                Log.i("xiongliang","A")
+            }
+        }
+        Log.i("xiongliang","hello work")
+    }
+
 
     /**
      * suspend 关键字 -- 能够是协程执行暂停,等执行完毕后再返回结果,同时不会阻塞线程
      */
-    suspend fun fetchData():String{
+    suspend fun fetchData(): String {
         delay(200)
         return "content"
     }
