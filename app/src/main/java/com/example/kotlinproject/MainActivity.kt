@@ -217,7 +217,8 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * 使用协程分发器 指定运行的线程
-     * Unconfined -- 不会限制到特定线程上
+     * Unconfined -- 调用者的线程去启动协程，但只会持续到第一个挂起点,恢复后由挂起函数所在的线程执行,
+     * 适用场景即不会限制到特定线程上。
      * 默认 -- 会继承启动它的那个上下文和分发器
      * default -- 会使用默认的分发器来启动协程,并使用后台的共享线程池来运行协程代码，等价于 GlobalScope.launch()
      * 线程池 -- 创建线程池,执行协程代码,并需要关闭协程分发器dispatcher.close().
