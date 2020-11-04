@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutine()
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
-        createCoroutine3()
+//        createCoroutine3()
+        cancelCoroutine()
     }
 
     /***
@@ -50,18 +51,15 @@ class MainActivity : AppCompatActivity() {
     /**
      * 通过runBlocking 创建协程
      */
-    fun createCoroutineBlock() {
-        runBlocking {
-            delay(timeMillis = 1000L)
-            Log.i("xiongliang", "111111")
+    fun createCoroutineBlock() = runBlocking {
+        delay(timeMillis = 1000L)
+        Log.i("xiongliang", "111111")
 
-            coroutineScope {
-
-            }
+        coroutineScope {
+            Log.i("xiongliang","333333333")
+            delay(2000)
         }
         Log.i("xiongliang", "22222222")
-
-
 
     }
 
@@ -81,16 +79,34 @@ class MainActivity : AppCompatActivity() {
     /**
      * 批量创建协程
      */
-   fun createCoroutine3() = runBlocking {
-        repeat (10){
+    fun createCoroutine3() = runBlocking {
+        repeat(10) {
             launch {
                 delay(1000)
-                Log.i("xiongliang","A")
+                Log.i("xiongliang", "A")
             }
         }
-        Log.i("xiongliang","hello work")
+        Log.i("xiongliang", "hello work")
     }
 
+
+    /**
+     * 协程取消和超时
+     */
+    fun cancelCoroutine()= runBlocking {
+        var job = launch {
+            repeat(20){
+                Log.i("xiongliang","index="+it)
+                delay(500)
+            }
+        }
+
+
+        delay(1000)
+        Log.i("xiongliang","111")
+        job.cancelAndJoin()
+
+    }
 
     /**
      * suspend 关键字 -- 能够是协程执行暂停,等执行完毕后再返回结果,同时不会阻塞线程
