@@ -30,7 +30,8 @@ class MainActivity : AppCompatActivity() {
 //        suspendMethod1()
 //        createCoroutineDispatcher()
 //        createCoroutineTest()
-        createParentChildCoroutineScope()
+//        createParentChildCoroutineScope()
+        changeThreadLocal()
     }
 
     /***
@@ -279,7 +280,7 @@ class MainActivity : AppCompatActivity() {
      * 父子协程,父协程被取消时, 其所有子协程会递归取消
      */
     fun createParentChildCoroutineScope()= runBlocking{
-        var job1 = launch  {
+        var job1 = launch(CoroutineName("自定义协程名字") + Dispatchers.Default)  {
             Log.i("xiongliang","111111")
             var job2 = launch {
                 Log.i("xiongliang","2222222")
@@ -289,7 +290,24 @@ class MainActivity : AppCompatActivity() {
         }
         delay(1000)
         job1.cancelAndJoin()
+    }
 
+    /***
+     * 协程在各个线程间切换ThreadLocal
+     */
+
+    val threadLocal = ThreadLocal<String>()
+    fun changeThreadLocal() = runBlocking{
+        threadLocal.set("helllo")
+        Log.i("xiongliang","1111.."+Thread.currentThread().name+"..."+threadLocal.get())
+        var job =launch(Dispatchers.Default+threadLocal.asContextElement( "world")) {
+            Log.i("xiongliang","22222.."+Thread.currentThread().name+"..."+threadLocal.get())
+            yield()
+            Log.i("xiongliang","33333.."+Thread.currentThread().name+"..."+threadLocal.get())
+        }
+
+        job.join()
+        Log.i("xiongliang","44444.."+Thread.currentThread().name+"..."+threadLocal.get())
     }
 
 
