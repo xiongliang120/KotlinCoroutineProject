@@ -27,11 +27,12 @@ class MainActivity : AppCompatActivity() {
 //        cancelCoroutine()
 //        cancelCoroutine2()
 //        jobTimeOut()
+        suspendMethod1()
 //        suspendMethod1()
 //        createCoroutineDispatcher()
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
-        changeThreadLocal()
+//        changeThreadLocal()
     }
 
     /***
@@ -170,11 +171,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * 挂起函数,常规使用
+     */
+    fun suspendMethod1() = runBlocking{
+        var expertTime = measureTimeMillis {
+            Log.i("xiongliang","111111")
+            var result1 = initValue1()
+            Log.i("xiongliang","22222")
+            var result2 = initValue2()
+            Log.i("xiongliang","打印函数结果="+(result1+result2))
+        }
+
+        Log.i("xiongliang","打印函数执行时间="+expertTime)
+    }
+
+    /**
      * 挂起函数的组合, async 和 await 实现并发
      *
      * 延迟执行,设置start参数we
      */
-    fun suspendMethod1() = runBlocking {
+    fun suspendMethod2() = runBlocking {
         var expertTime = measureTimeMillis {
             var time1 =  async { initValue1() }
             var time2 = async{ initValue2() }
