@@ -29,7 +29,8 @@ class MainActivity : AppCompatActivity() {
 //        jobTimeOut()
 //        suspendMethod1()
 //        createCoroutineDispatcher()
-        createCoroutineTest()
+//        createCoroutineTest()
+        createParentChildCoroutineScope()
     }
 
     /***
@@ -262,15 +263,35 @@ class MainActivity : AppCompatActivity() {
              newSingleThreadContext("context2").use { user2->
                  Log.i("xiongliang","000 Thread name="+Thread.currentThread().name)
                  runBlocking(user1) {
-                     Log.i("xiongliang","111 Thread name="+Thread.currentThread().name)
+                     var job = coroutineContext[Job]
+                     Log.i("xiongliang","111 Thread name="+Thread.currentThread().name+".."+job)
                      withContext(user2){
-                         Log.i("xiongliang","222 Thread name="+Thread.currentThread().name)
+                         var job = coroutineContext[Job]
+                         Log.i("xiongliang","222 Thread name="+Thread.currentThread().name +".."+job)
                      }
                      Log.i("xiongliang","333 Thread name="+Thread.currentThread().name)
                  }
              }
          }
     }
+
+    /**
+     * 父子协程,父协程被取消时, 其所有子协程会递归取消
+     */
+    fun createParentChildCoroutineScope()= runBlocking{
+        var job1 = launch  {
+            Log.i("xiongliang","111111")
+            var job2 = launch {
+                Log.i("xiongliang","2222222")
+                delay(4000)
+                Log.i("xiongliang","3333333")
+            }
+        }
+        delay(1000)
+        job1.cancelAndJoin()
+
+    }
+
 
     /**
      * 挂起函数
