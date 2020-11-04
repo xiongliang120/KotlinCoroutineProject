@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.*
+import java.util.concurrent.Executors
 import kotlin.concurrent.thread
+import kotlin.system.measureTimeMillis
 
 /***
  * Kotlin 协程的使用
@@ -23,7 +25,10 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutinePublicScope()
 //        createCoroutine3()
 //        cancelCoroutine()
-        cancelCoroutine2()
+//        cancelCoroutine2()
+//        jobTimeOut()
+//        suspendMethod1()
+        createCoroutineDispatcher()
     }
 
     /***
@@ -94,13 +99,21 @@ class MainActivity : AppCompatActivity() {
 
 
     /**
-     * 协程取消和超时
+     * 协程取消和超时,清理操作放在finally 中
      */
     fun cancelCoroutine()= runBlocking {
         var job = launch {
-            repeat(20){
-                Log.i("xiongliang","index="+it)
-                delay(500)
+            try {
+                repeat(20){
+                    Log.i("xiongliang","index="+it)
+                    delay(500)
+                }
+            }finally {
+                withContext(NonCancellable){
+                    Log.i("xiongliang","打印finally 块")
+                    delay(1000)
+                    Log.i("xiongliang","在finally  delay后执行代码片段")
+                }
             }
         }
 
@@ -129,8 +142,123 @@ class MainActivity : AppCompatActivity() {
        Log.i("xiongliang","打印协程是否被删除")
     }
 
+    /**
+     * 协程超时,
+     * withTimeout(time), 会抛异常
+     * withTimeOrNull(time),会返回null
+     */
+    fun  jobTimeOut() = runBlocking {
+//        withTimeout(2000){
+//            repeat(200){
+//                Log.i("xiongliang","打印i="+it)
+//                delay(400)
+//            }
+//        }
 
+        var job = withTimeoutOrNull(2000){
+            repeat(2){
+                Log.i("xiongliang","打印i="+it)
+                delay(400)
+            }
+        }
 
+        Log.i("xiongliang","打印job="+job)
+
+    }
+
+    /**
+     * 挂起函数的组合, async 和 await 实现并发
+     *
+     * 延迟执行,设置start参数we
+     */
+    fun suspendMethod1() = runBlocking {
+        var expertTime = measureTimeMillis {
+            var time1 =  async { initValue1() }
+            var time2 = async{ initValue2() }
+
+            var result1 = time1.await()
+            var result2 = time2.await()
+
+            Log.i("xiongliang","打印函数结果="+ (result1 + result2))
+        }
+        Log.i("xiongliang","打印函数的执行时间="+expertTime)
+
+        var expertTime1 = measureTimeMillis {
+            var time1 =  async(start = CoroutineStart.LAZY) { initValue1() }
+            var time2 = async(start = CoroutineStart.LAZY){ initValue2() }
+
+            Log.i("xiongliang","async 执行会堵塞外部协程执行11=")
+            time1.start()
+            time2.start()
+
+            var result1 = time1.await()
+            var result2 = time2.await()
+            Log.i("xiongliang","async 执行会堵塞外部协程执行=")
+
+            Log.i("xiongliang","打印函数结果="+ (result1 + result2))
+        }
+        Log.i("xiongliang","打印函数的执行时间="+expertTime1)
+
+        Log.i("xiongliang","-----------------------------")
+
+        var result1 = initValueAsync()
+        runBlocking {
+            Log.i("xiongliang","打印 result1 = "+ result1.await())
+        }
+
+    }
+
+    /**
+     * 定义异步风格函数
+     */
+    fun initValueAsync() = GlobalScope.async {
+        initValue1()
+    }
+
+    /**
+     * 使用协程分发器 指定运行的线程
+     * Unconfined -- 不会限制到特定线程上
+     * 默认 -- 会继承启动它的那个上下文和分发器
+     * default -- 会使用默认的分发器来启动协程,并使用后台的共享线程池来运行协程代码，等价于 GlobalScope.launch()
+     * 线程池 -- 创建线程池,执行协程代码,并需要关闭协程分发器dispatcher.close().
+     */
+    fun createCoroutineDispatcher() = runBlocking{
+        launch {
+            Log.i("xiongliang","launch1 Thread name"+Thread.currentThread().name)
+        }
+
+        launch(Dispatchers.Unconfined) {
+            Log.i("xiongliang","launch2 Thread name"+Thread.currentThread().name)
+        }
+
+        launch(Dispatchers.Default) {
+            Log.i("xiongliang","launch3 Thread name"+Thread.currentThread().name)
+        }
+
+        GlobalScope.launch {
+            Log.i("xiongliang","launch4 Thread name"+Thread.currentThread().name)
+        }
+
+        var singleThreadPoolDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+        launch(singleThreadPoolDispatcher) {
+            Log.i("xiongliang","launch5 Thread name"+Thread.currentThread().name)
+            singleThreadPoolDispatcher.close()
+        }
+
+    }
+
+    /**
+     * 挂起函数
+     */
+    suspend fun initValue1():Int{
+       delay(2000)
+       return 20
+    }
+
+    suspend fun initValue2():Int{
+        delay(3000)
+        return 10
+    }
 
     /**
      * suspend 关键字 -- 能够是协程执行暂停,等执行完毕后再返回结果,同时不会阻塞线程
@@ -139,4 +267,5 @@ class MainActivity : AppCompatActivity() {
         delay(200)
         return "content"
     }
+
 }
