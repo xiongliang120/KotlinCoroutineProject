@@ -28,7 +28,8 @@ class MainActivity : AppCompatActivity() {
 //        cancelCoroutine2()
 //        jobTimeOut()
 //        suspendMethod1()
-        createCoroutineDispatcher()
+//        createCoroutineDispatcher()
+        createCoroutineTest()
     }
 
     /***
@@ -246,6 +247,29 @@ class MainActivity : AppCompatActivity() {
             singleThreadPoolDispatcher.close()
         }
 
+    }
+
+    /**
+     * 协程调试,打印协程名字
+     * 通过JVM 配置 -Dkotlinx.coroutines.debug
+     *
+     * newSingleThreadContext,会创建新的线程执行协程代码(协程必须指定其为上下文), use 是线程不在使用时会被释放掉
+     *
+     */
+    fun  createCoroutineTest(){
+         newSingleThreadContext("context1").use { user1->
+             Log.i("xiongliang","aaa Thread name="+Thread.currentThread().name)
+             newSingleThreadContext("context2").use { user2->
+                 Log.i("xiongliang","000 Thread name="+Thread.currentThread().name)
+                 runBlocking(user1) {
+                     Log.i("xiongliang","111 Thread name="+Thread.currentThread().name)
+                     withContext(user2){
+                         Log.i("xiongliang","222 Thread name="+Thread.currentThread().name)
+                     }
+                     Log.i("xiongliang","333 Thread name="+Thread.currentThread().name)
+                 }
+             }
+         }
     }
 
     /**
