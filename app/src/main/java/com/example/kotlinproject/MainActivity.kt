@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
@@ -31,8 +32,11 @@ class MainActivity : AppCompatActivity() {
 //        suspendMethod2()
 //        createCoroutineDispatcher()
 //        createCoroutineTest()
-        createParentChildCoroutineScope()
+//        createParentChildCoroutineScope()
 //        changeThreadLocal()
+//        createFlow()
+//        cancelFlow()
+        flowOperator()
     }
 
     /***
@@ -349,6 +353,66 @@ class MainActivity : AppCompatActivity() {
 
         Log.i("xiongliang","555555555"+ Thread.currentThread().name+"..."+threadLocal.get())
     }
+
+    /***
+     * 创建Flow
+     */
+    fun createFlow()= runBlocking {
+       launch {
+           for (i in 1..4){
+               delay(200)
+               Log.i("xiongliang","hello"+i)
+           }
+       }
+        flowMethod().collect { 
+            Log.i("xiongliang","打印i="+it)
+        }
+    }
+
+
+    /**
+     * Flow的取消
+     */
+    fun cancelFlow() = runBlocking {
+         withTimeoutOrNull(400){
+             flowMethod().collect {
+                 Log.i("xiongliang","打印i="+it)
+             }
+         }
+
+        Log.i("xiongliang","hello")
+    }
+
+    /**
+     * flow的操作符使用
+     */
+    fun flowOperator() = runBlocking{
+        (1..10).asFlow().filter { it > 5 }.map { input-> intToString(input)}.collect {
+            Log.i("xiongliang","打印flow的操作符="+it)
+        }
+
+
+        (1..10).asFlow().transform { input->
+            emit("hello")
+            emit(intToString(2))
+            emit("world")
+        }.collect {
+            Log.i("xiongliang","打印transform="+it)
+        }
+    }
+
+
+    fun intToString(i:Int):String{
+        return "output"+i
+    }
+   
+    private fun flowMethod(): Flow<Int> = flow{
+        for (i in 1..4){
+            delay(200)
+            emit(i)
+        }
+    }
+
 
 
     /**
