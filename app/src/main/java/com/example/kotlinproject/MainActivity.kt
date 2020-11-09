@@ -27,11 +27,11 @@ class MainActivity : AppCompatActivity() {
 //        cancelCoroutine()
 //        cancelCoroutine2()
 //        jobTimeOut()
-        suspendMethod1()
 //        suspendMethod1()
+//        suspendMethod2()
 //        createCoroutineDispatcher()
 //        createCoroutineTest()
-//        createParentChildCoroutineScope()
+        createParentChildCoroutineScope()
 //        changeThreadLocal()
     }
 
@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity() {
             delay(2000)
         }
         Log.i("xiongliang", "22222222")
-
     }
+
 
     /**
      * 外部协程会等待起作用域内启动的协程执行完毕后才会执行完成
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
      * 协程取消和超时,清理操作放在finally 中
      */
     fun cancelCoroutine()= runBlocking {
-        var job = launch {
+        var job = launch() {
             try {
                 repeat(20){
                     Log.i("xiongliang","index="+it)
@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
                }
            }
        }
-       delay(1000)
+       delay(2000)
        job.cancelAndJoin()
        Log.i("xiongliang","打印协程是否被删除")
     }
@@ -152,21 +152,23 @@ class MainActivity : AppCompatActivity() {
      * withTimeOrNull(time),会返回null
      */
     fun  jobTimeOut() = runBlocking {
-//        withTimeout(2000){
-//            repeat(200){
-//                Log.i("xiongliang","打印i="+it)
-//                delay(400)
+//        var job = withTimeout(2000){
+//            repeat(5){
+//               Log.i("xiongliang","打印withTimeout i"+it)
+//               delay(400)
 //            }
 //        }
 
-        var job = withTimeoutOrNull(2000){
+//        Log.i("xiongliang","打印job="+job)
+
+        var job1 = withTimeoutOrNull(2000){
             repeat(2){
-                Log.i("xiongliang","打印i="+it)
+                Log.i("xiongliang","打印withTimeoutNull i="+it)
                 delay(400)
             }
         }
 
-        Log.i("xiongliang","打印job="+job)
+        Log.i("xiongliang","打印job1="+job1)
 
     }
 
@@ -224,8 +226,8 @@ class MainActivity : AppCompatActivity() {
         runBlocking {
             Log.i("xiongliang","打印 result1 = "+ result1.await())
         }
-
     }
+
 
     /**
      * 定义异步风格函数
@@ -243,25 +245,35 @@ class MainActivity : AppCompatActivity() {
      * 线程池 -- 创建线程池,执行协程代码,并需要关闭协程分发器dispatcher.close().
      */
     fun createCoroutineDispatcher() = runBlocking{
+
+
         launch {
-            Log.i("xiongliang","launch1 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","缺省 Thread name"+Thread.currentThread().name)
         }
 
         launch(Dispatchers.Unconfined) {
-            Log.i("xiongliang","launch2 Thread name"+Thread.currentThread().name)
+            newSingleThreadContext("测试Unconfined").use {  thread1->
+//                delay(1000)
+                withContext(thread1){
+                    var i = 100
+                    i++
+                    Log.i("xiongliang","Unconfined22 Thread name"+Thread.currentThread().name)
+                }
+                Log.i("xiongliang","Unconfined33 Thread name"+Thread.currentThread().name)
+            }
         }
 
         launch(Dispatchers.Default) {
-            Log.i("xiongliang","launch3 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","Default Thread name"+Thread.currentThread().name)
         }
 
         GlobalScope.launch {
-            Log.i("xiongliang","launch4 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","全局缺省 Thread name"+Thread.currentThread().name)
         }
 
         var singleThreadPoolDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         launch(singleThreadPoolDispatcher) {
-            Log.i("xiongliang","launch5 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","线程池 Thread name"+Thread.currentThread().name)
             singleThreadPoolDispatcher.close()
         }
 
@@ -285,6 +297,7 @@ class MainActivity : AppCompatActivity() {
                      withContext(user2){
                          var job = coroutineContext[Job]
                          Log.i("xiongliang","222 Thread name="+Thread.currentThread().name +".."+job)
+                         delay(2000)
                      }
                      Log.i("xiongliang","333 Thread name="+Thread.currentThread().name)
                  }
@@ -299,13 +312,19 @@ class MainActivity : AppCompatActivity() {
         var job1 = launch(CoroutineName("自定义协程名字") + Dispatchers.Default)  {
             Log.i("xiongliang","111111")
             var job2 = launch {
-                Log.i("xiongliang","2222222")
+                Log.i("xiongliang","job2  2222222")
                 delay(4000)
-                Log.i("xiongliang","3333333")
+                Log.i("xiongliang","job2  3333333")
+            }
+
+            var job3 = launch {
+                Log.i("xiongliang","job3  4444444")
+                delay(2000)
+                Log.i("xiongliang","job3  5555555")
             }
         }
         delay(1000)
-        job1.cancelAndJoin()
+        job1.cancel()
     }
 
     /***
@@ -313,17 +332,22 @@ class MainActivity : AppCompatActivity() {
      */
 
     val threadLocal = ThreadLocal<String>()
-    fun changeThreadLocal() = runBlocking{
-        threadLocal.set("helllo")
-        Log.i("xiongliang","1111.."+Thread.currentThread().name+"..."+threadLocal.get())
-        var job =launch(Dispatchers.Default+threadLocal.asContextElement( "world")) {
-            Log.i("xiongliang","22222.."+Thread.currentThread().name+"..."+threadLocal.get())
-            yield()
-            Log.i("xiongliang","33333.."+Thread.currentThread().name+"..."+threadLocal.get())
+    fun changeThreadLocal() {
+        runBlocking{
+            threadLocal.set("helllo")
+            Log.i("xiongliang","1111.."+Thread.currentThread().name+"..."+threadLocal.get())
+            var job =launch(Dispatchers.Default+threadLocal.asContextElement( "world")) {
+                Log.i("xiongliang","22222.."+Thread.currentThread().name+"..."+threadLocal.get())
+                yield()
+                Log.i("xiongliang","33333.."+Thread.currentThread().name+"..."+threadLocal.get())
+                delay(2000)
+            }
+
+            job.join()
+            Log.i("xiongliang","44444.."+Thread.currentThread().name+"..."+threadLocal.get())
         }
 
-        job.join()
-        Log.i("xiongliang","44444.."+Thread.currentThread().name+"..."+threadLocal.get())
+        Log.i("xiongliang","555555555"+ Thread.currentThread().name+"..."+threadLocal.get())
     }
 
 
