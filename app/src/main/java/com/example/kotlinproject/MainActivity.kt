@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Button
 import androidx.core.view.postDelayed
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.Executors
 import kotlin.concurrent.thread
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
-        createCoroutine()
+//        createCoroutine()
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
 //        createCoroutine3()
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 //        createFlow()
 //        cancelFlow()
 //        flowOperator()
+//        loopCallMethod()
+        channelMessage()
     }
 
     fun initView(){
@@ -62,7 +65,7 @@ class MainActivity : AppCompatActivity() {
      *
      */
     fun createCoroutine() {
-        var job = GlobalScope.launch(Dispatchers.Default) {
+        var job = GlobalScope.launch(Dispatchers.Unconfined) {
             delay(3000)
             nameButton?.post {
                 nameButton?.setText("xiongliang")
@@ -191,14 +194,15 @@ class MainActivity : AppCompatActivity() {
     /**
      * 挂起函数,常规使用
      */
-    fun suspendMethod1() = runBlocking{
+    fun suspendMethod1() = runBlocking(Dispatchers.Default){
         var expertTime = measureTimeMillis {
-            Log.i("xiongliang","111111")
+            Log.i("xiongliang","111111  Thread name ="+Thread.currentThread().name)
             var result1 = initValue1()
-            Log.i("xiongliang","22222")
+            Log.i("xiongliang","22222 Thread name ="+ Thread.currentThread().name )
             var result2 = initValue2()
             Log.i("xiongliang","打印函数结果="+(result1+result2))
         }
+
 
         Log.i("xiongliang","打印函数执行时间="+expertTime)
     }
@@ -219,6 +223,8 @@ class MainActivity : AppCompatActivity() {
             Log.i("xiongliang","打印函数结果="+ (result1 + result2))
         }
         Log.i("xiongliang","打印函数的执行时间="+expertTime)
+
+        Log.i("xiongliang","-----------------------------")
 
         var expertTime1 = measureTimeMillis {
             var time1 =  async(start = CoroutineStart.LAZY) { initValue1() }
@@ -423,7 +429,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 循环递归的调用挂起函数
+     */
+    fun loopCallMethod()= GlobalScope.launch{
+        while (true){
+            callMethod1()
+        }
+    }
 
+    suspend fun callMethod1(){
+        Log.i("xiongliang","循环递归调用挂起函数1111")
+        delay(400)
+        callMethod1()
+    }
+
+    /**
+     * 协程间使用channel 通信
+      */
+    fun channelMessage() = runBlocking{
+        val channel = Channel<Int>()
+        //发送消息
+        launch {
+            for(i in 1..10){
+                Log.i("xiongliang","发送数据")
+                channel.send(i)
+            }
+            channel.close()
+        }
+        //接收消息
+        launch {
+            for (value in channel)
+                Log.i("xiongliang","打印接收到数据="+value)
+        }
+    }
 
     /**
      * 挂起函数
