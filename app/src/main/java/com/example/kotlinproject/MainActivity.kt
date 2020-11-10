@@ -20,7 +20,7 @@ import kotlin.system.measureTimeMillis
  */
 
 class MainActivity : AppCompatActivity() {
-    private var nameButton: Button?= null
+    private var nameButton: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,10 +43,12 @@ class MainActivity : AppCompatActivity() {
 //        cancelFlow()
 //        flowOperator()
 //        loopCallMethod()
-        channelMessage()
+//        channelMessage()
+//        flowCombina()
+        flowCompeletion()
     }
 
-    fun initView(){
+    fun initView() {
         nameButton = findViewById(R.id.name)
     }
 
@@ -70,11 +72,11 @@ class MainActivity : AppCompatActivity() {
             nameButton?.post {
                 nameButton?.setText("xiongliang")
             }
-            Log.i("xiongliang", " Thread name11 "+ Thread.currentThread().name)
+            Log.i("xiongliang", " Thread name11 " + Thread.currentThread().name)
         }
 
 
-        Log.i("xiongliang", "Thread name22 "+ Thread.currentThread().name)
+        Log.i("xiongliang", "Thread name22 " + Thread.currentThread().name)
     }
 
     /**
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         Log.i("xiongliang", "111111")
 
         coroutineScope {
-            Log.i("xiongliang","333333333")
+            Log.i("xiongliang", "333333333")
             delay(2000)
         }
         Log.i("xiongliang", "22222222")
@@ -124,25 +126,25 @@ class MainActivity : AppCompatActivity() {
     /**
      * 协程取消和超时,清理操作放在finally 中
      */
-    fun cancelCoroutine()= runBlocking {
+    fun cancelCoroutine() = runBlocking {
         var job = launch() {
             try {
-                repeat(20){
-                    Log.i("xiongliang","index="+it)
+                repeat(20) {
+                    Log.i("xiongliang", "index=" + it)
                     delay(500)
                 }
-            }finally {
-                withContext(NonCancellable){
-                    Log.i("xiongliang","打印finally 块")
+            } finally {
+                withContext(NonCancellable) {
+                    Log.i("xiongliang", "打印finally 块")
                     delay(1000)
-                    Log.i("xiongliang","在finally  delay后执行代码片段")
+                    Log.i("xiongliang", "在finally  delay后执行代码片段")
                 }
             }
         }
 
 
         delay(1000)
-        Log.i("xiongliang","111")
+        Log.i("xiongliang", "111")
         job.cancelAndJoin()
     }
 
@@ -150,19 +152,19 @@ class MainActivity : AppCompatActivity() {
      * 协程取消,针对计算任务
      */
     fun cancelCoroutine2() = runBlocking {
-       var job = launch(Dispatchers.Default) {
-           var i =0
-           var startTime = System.currentTimeMillis()
-           while (isActive){
-               if(System.currentTimeMillis() >= startTime){
-                   Log.i("xiongliang","print i="+(i++))
-                   startTime += 500L
-               }
-           }
-       }
-       delay(2000)
-       job.cancelAndJoin()
-       Log.i("xiongliang","打印协程是否被删除")
+        var job = launch(Dispatchers.Default) {
+            var i = 0
+            var startTime = System.currentTimeMillis()
+            while (isActive) {
+                if (System.currentTimeMillis() >= startTime) {
+                    Log.i("xiongliang", "print i=" + (i++))
+                    startTime += 500L
+                }
+            }
+        }
+        delay(2000)
+        job.cancelAndJoin()
+        Log.i("xiongliang", "打印协程是否被删除")
     }
 
     /**
@@ -170,7 +172,7 @@ class MainActivity : AppCompatActivity() {
      * withTimeout(time), 会抛异常
      * withTimeOrNull(time),会返回null
      */
-    fun  jobTimeOut() = runBlocking {
+    fun jobTimeOut() = runBlocking {
 //        var job = withTimeout(2000){
 //            repeat(5){
 //               Log.i("xiongliang","打印withTimeout i"+it)
@@ -180,31 +182,31 @@ class MainActivity : AppCompatActivity() {
 
 //        Log.i("xiongliang","打印job="+job)
 
-        var job1 = withTimeoutOrNull(2000){
-            repeat(2){
-                Log.i("xiongliang","打印withTimeoutNull i="+it)
+        var job1 = withTimeoutOrNull(2000) {
+            repeat(2) {
+                Log.i("xiongliang", "打印withTimeoutNull i=" + it)
                 delay(400)
             }
         }
 
-        Log.i("xiongliang","打印job1="+job1)
+        Log.i("xiongliang", "打印job1=" + job1)
 
     }
 
     /**
      * 挂起函数,常规使用
      */
-    fun suspendMethod1() = runBlocking(Dispatchers.Default){
+    fun suspendMethod1() = runBlocking(Dispatchers.Default) {
         var expertTime = measureTimeMillis {
-            Log.i("xiongliang","111111  Thread name ="+Thread.currentThread().name)
+            Log.i("xiongliang", "111111  Thread name =" + Thread.currentThread().name)
             var result1 = initValue1()
-            Log.i("xiongliang","22222 Thread name ="+ Thread.currentThread().name )
+            Log.i("xiongliang", "22222 Thread name =" + Thread.currentThread().name)
             var result2 = initValue2()
-            Log.i("xiongliang","打印函数结果="+(result1+result2))
+            Log.i("xiongliang", "打印函数结果=" + (result1 + result2))
         }
 
 
-        Log.i("xiongliang","打印函数执行时间="+expertTime)
+        Log.i("xiongliang", "打印函数执行时间=" + expertTime)
     }
 
     /**
@@ -214,39 +216,39 @@ class MainActivity : AppCompatActivity() {
      */
     fun suspendMethod2() = runBlocking {
         var expertTime = measureTimeMillis {
-            var time1 =  async { initValue1() }
-            var time2 = async{ initValue2() }
+            var time1 = async { initValue1() }
+            var time2 = async { initValue2() }
 
             var result1 = time1.await()
             var result2 = time2.await()
 
-            Log.i("xiongliang","打印函数结果="+ (result1 + result2))
+            Log.i("xiongliang", "打印函数结果=" + (result1 + result2))
         }
-        Log.i("xiongliang","打印函数的执行时间="+expertTime)
+        Log.i("xiongliang", "打印函数的执行时间=" + expertTime)
 
-        Log.i("xiongliang","-----------------------------")
+        Log.i("xiongliang", "-----------------------------")
 
         var expertTime1 = measureTimeMillis {
-            var time1 =  async(start = CoroutineStart.LAZY) { initValue1() }
-            var time2 = async(start = CoroutineStart.LAZY){ initValue2() }
+            var time1 = async(start = CoroutineStart.LAZY) { initValue1() }
+            var time2 = async(start = CoroutineStart.LAZY) { initValue2() }
 
-            Log.i("xiongliang","async 执行会堵塞外部协程执行11=")
+            Log.i("xiongliang", "async 执行会堵塞外部协程执行11=")
             time1.start()
             time2.start()
 
             var result1 = time1.await()
             var result2 = time2.await()
-            Log.i("xiongliang","async 执行会堵塞外部协程执行=")
+            Log.i("xiongliang", "async 执行会堵塞外部协程执行=")
 
-            Log.i("xiongliang","打印函数结果="+ (result1 + result2))
+            Log.i("xiongliang", "打印函数结果=" + (result1 + result2))
         }
-        Log.i("xiongliang","打印函数的执行时间="+expertTime1)
+        Log.i("xiongliang", "打印函数的执行时间=" + expertTime1)
 
-        Log.i("xiongliang","-----------------------------")
+        Log.i("xiongliang", "-----------------------------")
 
         var result1 = initValueAsync()
         runBlocking {
-            Log.i("xiongliang","打印 result1 = "+ result1.await())
+            Log.i("xiongliang", "打印 result1 = " + result1.await())
         }
     }
 
@@ -266,34 +268,34 @@ class MainActivity : AppCompatActivity() {
      * default -- 会使用默认的分发器来启动协程,并使用后台的共享线程池来运行协程代码，等价于 GlobalScope.launch()
      * 线程池 -- 创建线程池,执行协程代码,并需要关闭协程分发器dispatcher.close().
      */
-    fun createCoroutineDispatcher() = runBlocking{
+    fun createCoroutineDispatcher() = runBlocking {
         launch {
-            Log.i("xiongliang","缺省 Thread name "+Thread.currentThread().name)
+            Log.i("xiongliang", "缺省 Thread name " + Thread.currentThread().name)
         }
 
         launch(Dispatchers.Unconfined) {
-            newSingleThreadContext("测试Unconfined").use {  thread1->
+            newSingleThreadContext("测试Unconfined").use { thread1 ->
 //                delay(1000)
-                withContext(thread1){
+                withContext(thread1) {
                     var i = 100
                     i++
-                    Log.i("xiongliang","Unconfined22 Thread name "+Thread.currentThread().name)
+                    Log.i("xiongliang", "Unconfined22 Thread name " + Thread.currentThread().name)
                 }
-                Log.i("xiongliang","Unconfined33 Thread name "+Thread.currentThread().name)
+                Log.i("xiongliang", "Unconfined33 Thread name " + Thread.currentThread().name)
             }
         }
 
         launch(Dispatchers.Default) {
-            Log.i("xiongliang","Default Thread name "+Thread.currentThread().name)
+            Log.i("xiongliang", "Default Thread name " + Thread.currentThread().name)
         }
 
         GlobalScope.launch {
-            Log.i("xiongliang","全局缺省 Thread name "+Thread.currentThread().name)
+            Log.i("xiongliang", "全局缺省 Thread name " + Thread.currentThread().name)
         }
 
         var singleThreadPoolDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         launch(singleThreadPoolDispatcher) {
-            Log.i("xiongliang","线程池 Thread name  "+Thread.currentThread().name)
+            Log.i("xiongliang", "线程池 Thread name  " + Thread.currentThread().name)
             singleThreadPoolDispatcher.close()
         }
 
@@ -306,41 +308,47 @@ class MainActivity : AppCompatActivity() {
      * newSingleThreadContext,会创建新的线程执行协程代码(协程必须指定其为上下文), use 是线程不在使用时会被释放掉
      *
      */
-    fun  createCoroutineTest(){
-         newSingleThreadContext("context1").use { user1->
-             Log.i("xiongliang","aaa Thread name="+Thread.currentThread().name)
-             newSingleThreadContext("context2").use { user2->
-                 Log.i("xiongliang","000 Thread name="+Thread.currentThread().name)
-                 runBlocking(user1) {
-                     var job = coroutineContext[Job]
-                     Log.i("xiongliang","111 Thread name="+Thread.currentThread().name+".."+job)
-                     withContext(user2){
-                         var job = coroutineContext[Job]
-                         Log.i("xiongliang","222 Thread name="+Thread.currentThread().name +".."+job)
-                         delay(2000)
-                     }
-                     Log.i("xiongliang","333 Thread name="+Thread.currentThread().name)
-                 }
-             }
-         }
+    fun createCoroutineTest() {
+        newSingleThreadContext("context1").use { user1 ->
+            Log.i("xiongliang", "aaa Thread name=" + Thread.currentThread().name)
+            newSingleThreadContext("context2").use { user2 ->
+                Log.i("xiongliang", "000 Thread name=" + Thread.currentThread().name)
+                runBlocking(user1) {
+                    var job = coroutineContext[Job]
+                    Log.i(
+                        "xiongliang",
+                        "111 Thread name=" + Thread.currentThread().name + ".." + job
+                    )
+                    withContext(user2) {
+                        var job = coroutineContext[Job]
+                        Log.i(
+                            "xiongliang",
+                            "222 Thread name=" + Thread.currentThread().name + ".." + job
+                        )
+                        delay(2000)
+                    }
+                    Log.i("xiongliang", "333 Thread name=" + Thread.currentThread().name)
+                }
+            }
+        }
     }
 
     /**
      * 父子协程,父协程被取消时, 其所有子协程会递归取消
      */
-    fun createParentChildCoroutineScope()= runBlocking{
-        var job1 = launch(CoroutineName("自定义协程名字") + Dispatchers.Default)  {
-            Log.i("xiongliang","111111")
+    fun createParentChildCoroutineScope() = runBlocking {
+        var job1 = launch(CoroutineName("自定义协程名字") + Dispatchers.Default) {
+            Log.i("xiongliang", "111111")
             var job2 = launch {
-                Log.i("xiongliang","job2  2222222")
+                Log.i("xiongliang", "job2  2222222")
                 delay(4000)
-                Log.i("xiongliang","job2  3333333")
+                Log.i("xiongliang", "job2  3333333")
             }
 
             var job3 = launch {
-                Log.i("xiongliang","job3  4444444")
+                Log.i("xiongliang", "job3  4444444")
                 delay(2000)
-                Log.i("xiongliang","job3  5555555")
+                Log.i("xiongliang", "job3  5555555")
             }
         }
         delay(1000)
@@ -353,35 +361,49 @@ class MainActivity : AppCompatActivity() {
 
     val threadLocal = ThreadLocal<String>()
     fun changeThreadLocal() {
-        runBlocking{
+        runBlocking {
             threadLocal.set("helllo")
-            Log.i("xiongliang","1111.."+Thread.currentThread().name+"..."+threadLocal.get())
-            var job =launch(Dispatchers.Default+threadLocal.asContextElement( "world")) {
-                Log.i("xiongliang","22222.."+Thread.currentThread().name+"..."+threadLocal.get())
+            Log.i("xiongliang", "1111.." + Thread.currentThread().name + "..." + threadLocal.get())
+            var job = launch(Dispatchers.Default + threadLocal.asContextElement("world")) {
+                Log.i(
+                    "xiongliang",
+                    "22222.." + Thread.currentThread().name + "..." + threadLocal.get()
+                )
                 yield()
-                Log.i("xiongliang","33333.."+Thread.currentThread().name+"..."+threadLocal.get())
+                Log.i(
+                    "xiongliang",
+                    "33333.." + Thread.currentThread().name + "..." + threadLocal.get()
+                )
                 delay(2000)
             }
 
             job.join()
-            Log.i("xiongliang","44444.."+Thread.currentThread().name+"..."+threadLocal.get())
+            Log.i("xiongliang", "44444.." + Thread.currentThread().name + "..." + threadLocal.get())
         }
 
-        Log.i("xiongliang","555555555"+ Thread.currentThread().name+"..."+threadLocal.get())
+        Log.i("xiongliang", "555555555" + Thread.currentThread().name + "..." + threadLocal.get())
     }
 
     /***
      * 创建Flow
      */
-    fun createFlow()= runBlocking {
-       launch {
-           for (i in 1..4){
-               delay(200)
-               Log.i("xiongliang","hello"+i)
-           }
-       }
-        flowMethod().collect { 
-            Log.i("xiongliang","打印i="+it)
+    fun createFlow() = runBlocking {
+        launch {
+            for (i in 1..4) {
+                delay(200)
+                Log.i("xiongliang", "hello" + i)
+            }
+        }
+//        flowMethod().collect {
+//            Log.i("xiongliang","打印i="+it)
+//        }
+
+        flowMethod1().collect {
+            Log.i("xiongliang", "打印i=" + it + "Thread name=" + Thread.currentThread().name)
+        }
+
+        flowMethod1().buffer().collect {
+            Log.i("xiongliang", "buffer 使用打印i=" + it + "Thread name=" + Thread.currentThread().name)
         }
     }
 
@@ -390,69 +412,105 @@ class MainActivity : AppCompatActivity() {
      * Flow的取消
      */
     fun cancelFlow() = runBlocking {
-         withTimeoutOrNull(400){
-             flowMethod().collect {
-                 Log.i("xiongliang","打印i="+it)
-             }
-         }
+        withTimeoutOrNull(400) {
+            flowMethod().collect {
+                Log.i("xiongliang", "打印i=" + it)
+            }
+        }
 
-        Log.i("xiongliang","hello")
+        Log.i("xiongliang", "hello")
     }
 
     /**
      * flow的操作符使用
      */
-    fun flowOperator() = runBlocking{
-        (1..10).asFlow().filter { it > 5 }.map { input-> intToString(input)}.collect {
-            Log.i("xiongliang","打印flow的操作符="+it)
+    fun flowOperator() = runBlocking {
+        (1..10).asFlow().filter { it > 5 }.map { input -> intToString(input) }.collect {
+            Log.i("xiongliang", "打印flow的操作符=" + it)
         }
 
 
-        (1..10).asFlow().transform { input->
+        (1..10).asFlow().transform { input ->
             emit("hello")
             emit(intToString(2))
             emit("world")
         }.collect {
-            Log.i("xiongliang","打印transform="+it)
+            Log.i("xiongliang", "打印transform=" + it)
+        }
+    }
+
+    /**
+     * 流的组合
+     */
+    fun flowCombina() = runBlocking {
+        var nums = (1..5).asFlow()
+        var string = flowOf("one", "two", "three", "four", "five")
+        nums.zip(string){a,b->
+             "$a"+"->"+"$b"
+        }.collect {
+            Log.i("xiongliang","打印it="+it)
         }
     }
 
 
-    fun intToString(i:Int):String{
-        return "output"+i
+    fun flowCompeletion() = runBlocking {
+        flowMethod1().onCompletion {
+            Log.i("xiongliang","flow  完成")
+        }.catch {cause ->
+            if(cause != null){
+                Log.i("xiongliang","flow 发生异常")
+            }
+        }.collect {
+            Log.i("xiongliang", "打印i=" + it + "Thread name=" + Thread.currentThread().name)
+        }
     }
-   
-    private fun flowMethod(): Flow<Int> = flow{
-        for (i in 1..4){
+
+
+    fun intToString(i: Int): String {
+        return "output" + i
+    }
+
+    private fun flowMethod(): Flow<Int> = flow {
+        for (i in 1..4) {
             delay(200)
             emit(i)
         }
     }
 
+    private fun flowMethod1(): Flow<Int> = flow {
+        for (i in 1..4) {
+            delay(200)
+            Log.i("xiongliang", "flowMethod1 Thread name=" + Thread.currentThread().name)
+            emit(i)
+        }
+    }.flowOn(Dispatchers.Default)
+
+
     /**
      * 循环递归的调用挂起函数
      */
-    fun loopCallMethod()= GlobalScope.launch{
-        while (true){
+    fun loopCallMethod() = GlobalScope.launch {
+        while (true) {
             callMethod1()
         }
     }
 
-    suspend fun callMethod1(){
-        Log.i("xiongliang","循环递归调用挂起函数1111")
+
+    suspend fun callMethod1() {
+        Log.i("xiongliang", "循环递归调用挂起函数1111")
         delay(400)
         callMethod1()
     }
 
     /**
      * 协程间使用channel 通信
-      */
-    fun channelMessage() = runBlocking{
+     */
+    fun channelMessage() = runBlocking {
         val channel = Channel<Int>()
         //发送消息
         launch {
-            for(i in 1..10){
-                Log.i("xiongliang","发送数据")
+            for (i in 1..10) {
+                Log.i("xiongliang", "发送数据")
                 channel.send(i)
             }
             channel.close()
@@ -460,19 +518,19 @@ class MainActivity : AppCompatActivity() {
         //接收消息
         launch {
             for (value in channel)
-                Log.i("xiongliang","打印接收到数据="+value)
+                Log.i("xiongliang", "打印接收到数据=" + value)
         }
     }
 
     /**
      * 挂起函数
      */
-    suspend fun initValue1():Int{
-       delay(2000)
-       return 20
+    suspend fun initValue1(): Int {
+        delay(2000)
+        return 20
     }
 
-    suspend fun initValue2():Int{
+    suspend fun initValue2(): Int {
         delay(3000)
         return 10
     }
