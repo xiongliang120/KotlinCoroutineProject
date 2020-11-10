@@ -3,6 +3,8 @@ package com.example.kotlinproject
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import androidx.core.view.postDelayed
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.util.concurrent.Executors
@@ -17,11 +19,13 @@ import kotlin.system.measureTimeMillis
  */
 
 class MainActivity : AppCompatActivity() {
+    private var nameButton: Button?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        createCoroutine()
+        initView()
+        createCoroutine()
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
 //        createCoroutine3()
@@ -36,8 +40,13 @@ class MainActivity : AppCompatActivity() {
 //        changeThreadLocal()
 //        createFlow()
 //        cancelFlow()
-        flowOperator()
+//        flowOperator()
     }
+
+    fun initView(){
+        nameButton = findViewById(R.id.name)
+    }
+
 
     /***
      * 创建协程
@@ -53,13 +62,16 @@ class MainActivity : AppCompatActivity() {
      *
      */
     fun createCoroutine() {
-        var job = GlobalScope.launch(Dispatchers.Main) {
+        var job = GlobalScope.launch(Dispatchers.Default) {
             delay(3000)
-            Log.i("xiongliang", "content")
+            nameButton?.post {
+                nameButton?.setText("xiongliang")
+            }
+            Log.i("xiongliang", " Thread name11 "+ Thread.currentThread().name)
         }
 
 
-        Log.i("xiongliang", "11")
+        Log.i("xiongliang", "Thread name22 "+ Thread.currentThread().name)
     }
 
     /**
@@ -249,10 +261,8 @@ class MainActivity : AppCompatActivity() {
      * 线程池 -- 创建线程池,执行协程代码,并需要关闭协程分发器dispatcher.close().
      */
     fun createCoroutineDispatcher() = runBlocking{
-
-
         launch {
-            Log.i("xiongliang","缺省 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","缺省 Thread name "+Thread.currentThread().name)
         }
 
         launch(Dispatchers.Unconfined) {
@@ -261,23 +271,23 @@ class MainActivity : AppCompatActivity() {
                 withContext(thread1){
                     var i = 100
                     i++
-                    Log.i("xiongliang","Unconfined22 Thread name"+Thread.currentThread().name)
+                    Log.i("xiongliang","Unconfined22 Thread name "+Thread.currentThread().name)
                 }
-                Log.i("xiongliang","Unconfined33 Thread name"+Thread.currentThread().name)
+                Log.i("xiongliang","Unconfined33 Thread name "+Thread.currentThread().name)
             }
         }
 
         launch(Dispatchers.Default) {
-            Log.i("xiongliang","Default Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","Default Thread name "+Thread.currentThread().name)
         }
 
         GlobalScope.launch {
-            Log.i("xiongliang","全局缺省 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","全局缺省 Thread name "+Thread.currentThread().name)
         }
 
         var singleThreadPoolDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         launch(singleThreadPoolDispatcher) {
-            Log.i("xiongliang","线程池 Thread name"+Thread.currentThread().name)
+            Log.i("xiongliang","线程池 Thread name  "+Thread.currentThread().name)
             singleThreadPoolDispatcher.close()
         }
 
