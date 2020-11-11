@@ -48,20 +48,38 @@ class CommonActivity: AppCompatActivity() {
     fun method2(){
        var emptyClass = EmptyClass("名字")
        emptyClass.printUserName()
+        var emptyClass1 = EmptyClass("名字",30)
+        emptyClass1.printUserName()
     }
 
 }
 
-
+/**
+ * 定义构造函数
+ */
 class EmptyClass(userName:String){
     private var userName = userName
-
+    private var age:Int
     init {
-        Log.i("xiongliang","打印userName="+userName)
+        this.userName = userName
+        this.age = 10
+    }
+
+    constructor(userName: String,age:Int):this(userName){
+        this.userName = userName
+        this.age = age
     }
 
     fun printUserName(){
-        Log.i("xiongliang","方法调用="+userName)
+        Log.i("xiongliang","方法调用 userName="+userName+"age="+age)
     }
+}
 
+/**
+ * 直接属性属性
+ */
+class Student(var userName:String, var age:Int=2){
+    fun printUserName(){
+        Log.i("xiongliang","方法调用 userName="+userName+"age="+age)
+    }
 }
