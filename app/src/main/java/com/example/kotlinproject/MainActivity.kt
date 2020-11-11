@@ -39,13 +39,13 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
 //        changeThreadLocal()
-//        createFlow()
+        createFlow()
 //        cancelFlow()
 //        flowOperator()
 //        loopCallMethod()
 //        channelMessage()
 //        flowCombina()
-        flowCompeletion()
+//        flowCompeletion()
     }
 
     fun initView() {
