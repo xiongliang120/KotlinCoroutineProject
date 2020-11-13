@@ -54,6 +54,7 @@ class CommonActivity: AppCompatActivity() {
 
 }
 
+
 /**
  * 定义构造函数
  */
@@ -65,7 +66,7 @@ class EmptyClass(userName:String){
         this.age = 10
     }
 
-    constructor(userName: String,age:Int):this(userName){
+    constructor(userName: String, age:Int):this(userName){
         this.userName = userName
         this.age = age
     }
@@ -78,8 +79,70 @@ class EmptyClass(userName:String){
 /**
  * 直接属性属性
  */
-class Student(var userName:String, var age:Int=2){
+open class Student(var userName:String, var age:Int=2){
+    open var name:String = ""
+
     fun printUserName(){
         Log.i("xiongliang","方法调用 userName="+userName+"age="+age)
     }
+
+    open fun print(){
+
+    }
 }
+
+
+/**
+ * 每个sencond 构造方法都需要 初始化父构造方法
+ */
+class ChildStudent : Student{
+    override var name:String = "123"
+
+    constructor(userName: String,age: Int):super(userName,age){
+
+    }
+
+    constructor(userName: String):super(userName,23){
+
+    }
+
+    override  fun print(){
+
+    }
+
+    fun calucate(a:Int,b:Int) = a+b
+}
+
+fun ChildStudent.mutifyCalucate(a:Int,b:Int) = a*b
+
+
+interface Home{
+    fun name()
+    fun test(){
+
+    }
+}
+
+class Home1 :Home{
+    lateinit var age:String
+
+    companion object Instance{
+        var instanceName:String = ""
+
+        @JvmStatic
+        fun getName():String{
+            return instanceName
+        }
+    }
+
+    override fun name() {
+        var childStudent = ChildStudent("11")
+        childStudent.mutifyCalucate(1,2)
+
+        Home1.Instance.instanceName
+    }
+
+    fun ChildStudent.mutifyCalucate(a:Int,b:Int) = a*b
+}
+
+
