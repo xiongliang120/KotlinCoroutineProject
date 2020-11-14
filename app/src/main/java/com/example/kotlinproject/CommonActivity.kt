@@ -12,7 +12,8 @@ class CommonActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        method1()
 //        method2()
-        method3()
+//        method3()
+        method4()
     }
 
     /**
@@ -53,9 +54,36 @@ class CommonActivity: AppCompatActivity() {
         emptyClass1.printUserName()
     }
 
+    /**
+     * 协变和逆变
+     */
     fun method3(){
         var home1 = Home1()
         home1.testGeneric2()
+    }
+
+    /***
+     * 处协变和逆变
+     */
+    fun method4(){
+        var home1 = Home1()
+        //声明处协变和逆变
+        var to:Array<Int> = arrayOf(1,2,3,4)
+        var form:Array<Any> = arrayOf("hello","hello","hello","hello")
+        home1.copy(to,form)
+        for (item in form){
+            Log.i("xiongliang","打印 out  item="+item)
+        }
+
+        Log.i("xiongliang","----------------")
+
+        var array1:Array<Any> = arrayOf("hello","hello","hello","hello")
+        home1.setArrayValue(array1,1,"2")
+        for (item in array1){
+            Log.i("xiongliang","打印 out  item="+item+".."+item.javaClass.typeName)
+        }
+
+
     }
 
 }
@@ -163,24 +191,24 @@ class Home1 :Home{
     /**
      * 测试泛型 协变 和 逆变
      */
-    fun testGeneric(){
-         //验证协变
-         var animalOne = mutableListOf<Animal>()
-         animalOne.add(Cat())
-         var animalTwo:MutableList<out Animal> = animalOne
-         //由于添加类型是Animal以及其子类, 添加的可能是Cat,也可能是Dog, 最后导致泛型混乱.
-         animalTwo.add(Cat())
-         animalTwo.add(Animal())
-         var result:Animal = animalTwo.get(0) //根据多态的向上转型
-
-        //验证逆变
-        var animalThree = mutableListOf<Animal>()
-        animalThree.add(Cat())
-        var animalFour:MutableList<in Animal> = animalOne
-        animalFour.add(Cat())
-        animalFour.add(Animal())
-        var result2:Animal =animalFour.get(0)
-    }
+//    fun testGeneric(){
+//         //验证协变
+//         var animalOne = mutableListOf<Animal>()
+//         animalOne.add(Cat())
+//         var animalTwo:MutableList<out Animal> = animalOne
+//         //由于添加类型是Animal以及其子类, 添加的可能是Cat,也可能是Dog, 最后导致泛型混乱.
+//         animalTwo.add(Cat())
+//         animalTwo.add(Animal())
+//         var result:Animal = animalTwo.get(0) //根据多态的向上转型
+//
+//        //验证逆变
+//        var animalThree = mutableListOf<Animal>()
+//        animalThree.add(Cat())
+//        var animalFour:MutableList<in Animal> = animalOne
+//        animalFour.add(Cat())
+//        animalFour.add(Animal())
+//        var result2:Animal =animalFour.get(0)
+//    }
 
     /**
      * 协变和逆变
@@ -204,7 +232,23 @@ class Home1 :Home{
         comsumer1.consumer(YelloCat())
         comsumer2.consumer(YelloCat())
         comsumer3.consumer(YelloCat())
+    }
 
+    /**
+     * 泛型使用处声明
+     */
+    fun  copy(form:Array<out Any>,to:Array<Any>){
+        if(form.size == to.size){
+            for (i in form.indices){
+                to[i] = form[i]
+            }
+        }
+    }
+
+    fun setArrayValue(array:Array<in String>,index:Int,value:String){
+        if(index < array.size && index >= 0){
+            array[index] = value
+        }
     }
 }
 
