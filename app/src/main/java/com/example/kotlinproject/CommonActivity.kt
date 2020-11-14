@@ -123,6 +123,9 @@ interface Home{
     }
 }
 
+
+
+
 class Home1 :Home{
     lateinit var age:String
 
@@ -138,11 +141,60 @@ class Home1 :Home{
     override fun name() {
         var childStudent = ChildStudent("11")
         childStudent.mutifyCalucate(1,2)
-
-        Home1.Instance.instanceName
     }
 
+    fun calucate(calucator: AddCalucator){
+        when(calucator){
+            is AddCalucator -> {
+
+            }
+        }
+    }
+
+
     fun ChildStudent.mutifyCalucate(a:Int,b:Int) = a*b
+
+    /**
+     * 测试泛型
+     */
+    fun testGeneric(){
+         //验证协变
+         var animalOne = mutableListOf<Animal>()
+         animalOne.add(Cat())
+         var animalTwo:MutableList<out Animal> = animalOne
+         //由于添加类型是Animal以及其子类, 所以无法确定类型
+         animalTwo.add(Cat())
+         animalTwo.add(Animal())
+         var result:Animal = animalTwo.get(0) //根据多态的向上转型
+
+        //验证逆变
+        var animalThree = mutableListOf<Animal>()
+        animalThree.add(Cat())
+        var animalFour:MutableList<in Animal> = animalOne
+        animalFour.add(Cat())
+        animalFour.add(Animal())
+        var result2:Animal =animalFour.get(0)
+
+
+    }
 }
+
+
+data class Person(
+    var name:String,
+    val age:Int
+)
+
+sealed class Calucator
+
+class AddCalucator() :Calucator()
+
+
+
+open class Animal
+class Dog:Animal()
+class Cat :Animal()
+
+
 
 
