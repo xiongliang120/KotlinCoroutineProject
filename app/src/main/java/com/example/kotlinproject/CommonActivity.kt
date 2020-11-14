@@ -11,7 +11,8 @@ class CommonActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        method1()
-        method2()
+//        method2()
+        method3()
     }
 
     /**
@@ -50,6 +51,11 @@ class CommonActivity: AppCompatActivity() {
        emptyClass.printUserName()
         var emptyClass1 = EmptyClass("名字",30)
         emptyClass1.printUserName()
+    }
+
+    fun method3(){
+        var home1 = Home1()
+        home1.testGeneric2()
     }
 
 }
@@ -155,14 +161,14 @@ class Home1 :Home{
     fun ChildStudent.mutifyCalucate(a:Int,b:Int) = a*b
 
     /**
-     * 测试泛型
+     * 测试泛型 协变 和 逆变
      */
     fun testGeneric(){
          //验证协变
          var animalOne = mutableListOf<Animal>()
          animalOne.add(Cat())
          var animalTwo:MutableList<out Animal> = animalOne
-         //由于添加类型是Animal以及其子类, 所以无法确定类型
+         //由于添加类型是Animal以及其子类, 添加的可能是Cat,也可能是Dog, 最后导致泛型混乱.
          animalTwo.add(Cat())
          animalTwo.add(Animal())
          var result:Animal = animalTwo.get(0) //根据多态的向上转型
@@ -174,7 +180,30 @@ class Home1 :Home{
         animalFour.add(Cat())
         animalFour.add(Animal())
         var result2:Animal =animalFour.get(0)
+    }
 
+    /**
+     * 协变和逆变
+     *
+     */
+    fun testGeneric2(){
+        //out 协变 可以将子类型 赋值 给父类型引用
+        var producer1:Producer<Animal> = DogProducer()
+        var producer2:Producer<Animal> = CatProducer()
+        var producer3:Producer<Animal> = YelloCatProductor()
+
+        Log.i("xiongliang","打印producer1="+producer1.produce())
+        Log.i("xiongliang","打印producer2="+producer2.produce())
+        Log.i("xiongliang","打印producer3="+producer3.produce())
+
+        Log.i("xiongliang","------------------------------")
+        //in 逆变 可以将父类型对象赋值给子类型引用
+        var comsumer1:Comsumer<YelloCat> = Huaman()
+        var comsumer2: Comsumer<YelloCat> = Men()
+        var comsumer3:Comsumer<YelloCat> = Boy()
+        comsumer1.consumer(YelloCat())
+        comsumer2.consumer(YelloCat())
+        comsumer3.consumer(YelloCat())
 
     }
 }
@@ -193,8 +222,52 @@ class AddCalucator() :Calucator()
 
 open class Animal
 class Dog:Animal()
-class Cat :Animal()
+open class Cat :Animal()
+class YelloCat:Cat()
+
+interface Producer<out T>{
+    fun produce():T
+}
+interface Comsumer<in T>{
+    fun consumer(item:T)
+}
+
+class DogProducer:Producer<Dog>{
+    override fun produce(): Dog {
+        return Dog()
+    }
+}
+class CatProducer:Producer<Cat>{
+    override fun produce(): Cat {
+        return Cat()
+    }
+}
+
+class YelloCatProductor:Producer<YelloCat>{
+    override fun produce(): YelloCat {
+        return YelloCat()
+    }
+}
 
 
+class Huaman:Comsumer<Animal>{
+    override fun consumer(item: Animal) {
+        Log.i("xiongliang","接受到item="+item)
+    }
+}
+
+class Men:Comsumer<Cat>{
+    override fun consumer(item: Cat) {
+        Log.i("xiongliang","接受到item="+item)
+    }
+
+}
+
+class Boy:Comsumer<YelloCat>{
+    override fun consumer(item: YelloCat) {
+        Log.i("xiongliang","接受到item="+item)
+    }
+
+}
 
 
