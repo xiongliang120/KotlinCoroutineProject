@@ -13,7 +13,8 @@ class CommonActivity: AppCompatActivity() {
 //        method1()
 //        method2()
 //        method3()
-        method4()
+//        method4()
+        method5()
     }
 
     /**
@@ -82,8 +83,14 @@ class CommonActivity: AppCompatActivity() {
         for (item in array1){
             Log.i("xiongliang","打印 out  item="+item+".."+item.javaClass.typeName)
         }
+    }
 
-
+    /**
+     * 对象表达式使用
+     */
+    fun method5(){
+        var home1 = Home1()
+        home1.objectExpress()
     }
 
 }
@@ -250,6 +257,35 @@ class Home1 :Home{
             array[index] = value
         }
     }
+
+    /***
+     * 对象表达式
+     */
+
+    private var object2 = object{
+        var expressName:String
+        init {
+           expressName = ""
+        }
+    }
+
+
+    fun objectExpress(){
+       var name:String= ""
+       var object1 = object :ObjectInterface, ObjectInterface1() {
+           override fun print() {
+               name = "test"
+               Log.i("xiongliang","执行print"+name)
+           }
+
+           override fun printAbstract() {
+               Log.i("xiongliang","执行printAbstract ")
+           }
+       }
+       Log.i("xiongliang","打印 对象表达式作为成员变量="+object2.expressName)
+       object1.print()
+       object1.printAbstract()
+    }
 }
 
 
@@ -311,7 +347,33 @@ class Boy:Comsumer<YelloCat>{
     override fun consumer(item: YelloCat) {
         Log.i("xiongliang","接受到item="+item)
     }
-
 }
+
+class OutClass{
+    var name:String = ""
+    //嵌套类
+    class NestClass{
+        fun foo(){
+            Log.i("xiongliang","嵌套类=")
+        }
+    }
+    //内部类
+    inner class InnerClass{
+        fun foo(){
+            Log.i("xiongliang","内部类"+ this@OutClass.name)
+        }
+    }
+}
+
+
+//对象表达式
+interface ObjectInterface{
+    fun print()
+}
+
+abstract class ObjectInterface1{
+    abstract fun printAbstract()
+}
+
 
 
