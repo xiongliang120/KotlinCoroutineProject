@@ -17,8 +17,8 @@ class CommonActivity : AppCompatActivity() {
 //        method3()
 //        method4()
 //        method5()
-        method6()
-//        method7()
+//        method6()
+        method7()
     }
 
     /**
@@ -109,9 +109,9 @@ class CommonActivity : AppCompatActivity() {
      * 测试lamda 表达式
      */
     fun method7(){
-        lamdaExpress(1,2){
-            x,y->
-                 Log.i("xiongliang","打印x+y="+x+y)
+        lamdaExpress(1,2){  x,y->
+            Log.i("xiongliang","执行lamda 表达式")
+            Log.i("xiongliang","打印x+y="+x+y)
         }
     }
 
@@ -331,14 +331,14 @@ class Home1 : Home {
         propertyClass.name = "xiongliang"
         Log.i("xiongliang", "属性委托=" + propertyClass.name)
 
-        Log.i("xiongliang","打印延迟属性="+ initAge)
-        Log.i("xiongliang","打印延迟属性="+ initAge)
+        Log.i("xiongliang","打印延迟属性委托="+ initAge)
+        Log.i("xiongliang","打印延迟属性委托="+ initAge)
 
         propertyClass.age = 29
-        Log.i("xiongliang","打印Property.age="+propertyClass.age)
+        Log.i("xiongliang","打印非空属性委托Property.age="+propertyClass.age)
 
         propertyClass.observableAge = 50
-        Log.i("xiongliang","打印可观测属性 observableAge="+propertyClass.observableAge)
+        Log.i("xiongliang","打印可观测属性委托 observableAge="+propertyClass.observableAge)
 
         var mapDelegate = MapDelegate(mapOf(
             "name" to "xiongliang",
