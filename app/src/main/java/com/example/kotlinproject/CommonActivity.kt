@@ -17,8 +17,8 @@ class CommonActivity : AppCompatActivity() {
 //        method3()
 //        method4()
 //        method5()
-//        method6()
-        method7()
+        method6()
+//        method7()
     }
 
     /**
@@ -291,7 +291,9 @@ class Home1 : Home {
         }
     }
 
-
+    /**
+     * 对象表达式
+     */
     fun objectExpress() {
         var name: String = ""
         var object1 = object : ObjectInterface, ObjectInterface1() {
