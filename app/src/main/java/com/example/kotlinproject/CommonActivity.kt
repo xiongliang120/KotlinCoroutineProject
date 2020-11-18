@@ -113,7 +113,57 @@ class CommonActivity : AppCompatActivity() {
             Log.i("xiongliang","执行lamda 表达式")
             Log.i("xiongliang","打印x+y="+x+y)
         }
+        //可变参数
+        varargParam("1","2","3")
+        varargParam1(params = *arrayOf("1","2"))
+
+        var propertyClass = PropertyClass()
+        //中缀方法调用
+        propertyClass infixFun(9)
+
+        //高阶函数
+        var add:(Int,Int)->Int= {a, b ->  a+b}
+        var subtract = {a:Int,b:Int -> a-b}
+
+        Log.i("xiongliang","高阶函数add="+add(1,2))
+        Log.i("xiongliang","高阶函数subtract="+subtract(1,2))
+
+        var str = "abcd456fssdf"
+        var result = str.filter {
+            if(it >= 'a' && it <= 'z'){
+                 return@filter true
+            }
+            return@filter false
+        }
+        Log.i("xiongliang","打印扩展String = "+result)
+
+        var sum = ""
+        var strings = arrayOf("hello","world","helloD","welcome")
+        strings.filter { it.contains("d",ignoreCase = true) }.map { it.toUpperCase() }.forEach{
+            sum += it
+            Log.i("xiongliang","打印字符串="+it)
+        }
+        //闭包使用
+        Log.i("xiongliang","打印闭包操作sum="+sum)
+
+        //函数字面值
+        val numSubtract: Int.(other:Int)->Int = {
+            other ->  this-other
+        }
+        Log.i("xiongliang","打印字面值="+1.numSubtract(3))
+
+        //解构声明
+        var(name1,age1) = Person("xiongliang",29)
+        var(name2,age2) = Pair("xiongliang",20)
+        Log.i("xiongliang","打印解构声明  name1= $name1 age1 $age1")
+        Log.i("xiongliang","打印解构声明 pair name2= $name2 age2 $age2")
+        var map2 = mapOf("a" to "aa","b" to "bb","c" to "cc")
+        map2.mapValues { (key,value)-> "$value hello" }.forEach {
+            Log.i("xiongliang","解构声明 调用map="+it.value)
+        }
     }
+
+
 
 }
 
@@ -177,7 +227,19 @@ class ChildStudent : Student {
     fun calucate(a: Int, b: Int) = a + b
 }
 
+//扩展方法
 fun ChildStudent.mutifyCalucate(a: Int, b: Int) = a * b
+
+fun String.filter(predicate: (Char)->Boolean):String{
+
+    var result:StringBuffer = StringBuffer()
+    for (index in 0 until length){  //不包括length
+        if(predicate(get(index))){
+            result.append(get(index))
+        }
+    }
+    return result.toString()
+}
 
 
 interface Home {
@@ -213,7 +275,7 @@ class Home1 : Home {
         }
     }
 
-
+    //扩展方法
     fun ChildStudent.mutifyCalucate(a: Int, b: Int) = a * b
 
     /**
@@ -496,6 +558,13 @@ class PropertyClass {
         property, oldValue, newValue ->
         Log.i("xiongliang","可观测委托 property=$property oldValue=$oldValue newValue=$newValue")
     }
+
+    /**
+     * 中缀方法
+     */
+    infix fun infixFun(num:Int){
+        Log.i("xiongliang","打印中缀方法 num $num")
+    }
 }
 
 //延迟属性
@@ -515,4 +584,17 @@ class MapDelegate(map:Map<String,Any>){
 //lamda 表达式
 fun lamdaExpress(a:Int, b:Int, compute: (x:Int,y:Int)->Unit){
     compute(a,b)
+}
+
+//可变参数, 可变参数只能呢个作为最后一个参数.
+fun varargParam(vararg params:String){
+    for (item in params){
+        Log.i("xiongliang","打印item="+item)
+    }
+}
+
+fun varargParam1(nums:Int = 9,vararg params:String){
+    for (item in params){
+        Log.i("xiongliang","打印item="+item)
+    }
 }
