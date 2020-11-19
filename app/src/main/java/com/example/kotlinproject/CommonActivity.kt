@@ -3,7 +3,9 @@ package com.example.kotlinproject
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import java.io.FileInputStream
 import kotlin.properties.Delegates
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 /**
@@ -18,7 +20,9 @@ class CommonActivity : AppCompatActivity() {
 //        method4()
 //        method5()
 //        method6()
-        method7()
+//        method7()
+//        method8()
+        method9()
     }
 
     /**
@@ -163,6 +167,32 @@ class CommonActivity : AppCompatActivity() {
         }
     }
 
+    /***
+     * 测试注解
+     */
+    @MyAnnotation("hello",Int::class)
+    fun method8(){
+    }
+
+    /**
+     * kotlin 与 java 互调
+     */
+    fun method9(){
+        var list = ArrayList<String>()  //java 集合方式
+        list.add("1")
+        list.add("2")
+        for (item in list){
+            Log.i("xiongliang","打印item="+item)
+        }
+
+//        var item:String = Utils.getText()
+//        Log.i("xiongliang","打印item="+item)
+
+
+        var num1s = arrayOf(1,2,3)  //装箱数组 Integer[]
+        var num2s = intArrayOf(1,2,3)  //原生数组int[]
+//        var num3s:Array<Any> = num2s  //kotlin 不允许变化,java 允许
+    }
 
 
 }
@@ -598,3 +628,9 @@ fun varargParam1(nums:Int = 9,vararg params:String){
         Log.i("xiongliang","打印item="+item)
     }
 }
+
+//注解定义
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+@MustBeDocumented
+annotation class MyAnnotation(val str:String,val argClass:KClass<*>)
