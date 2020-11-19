@@ -175,9 +175,20 @@ class CommonActivity : AppCompatActivity() {
     }
 
     /**
-     * kotlin 与 java 互调
+     * 嵌套类和内部类
+     * 依次调用: 嵌套类,内部类, 伴生对象,调用方式不一样.
+     *
      */
     fun method9(){
+        OutClass.NestClass().foo()
+        OutClass().InnerClass().foo()
+        Log.i("xiongliang","打印伴生对象的值="+Home1.Instance.instanceName)
+    }
+
+    /**
+     * kotlin 与 java 互调
+     */
+    fun method10(){
         var list = ArrayList<String>()  //java 集合方式
         list.add("1")
         list.add("2")
@@ -192,7 +203,11 @@ class CommonActivity : AppCompatActivity() {
         var num1s = arrayOf(1,2,3)  //装箱数组 Integer[]
         var num2s = intArrayOf(1,2,3)  //原生数组int[]
 //        var num3s:Array<Any> = num2s  //kotlin 不允许变化,java 允许
+
+        Log.i("xiongliang","打印class类型 ${EmptyClass("11")::class.java}")
+        Log.i("xiongliang","打印class类型 ${EmptyClass("11").javaClass}")
     }
+
 
 
 }
@@ -444,6 +459,7 @@ class Home1 : Home {
 
 
 data class Person(
+    @JvmField
     var name: String,
     val age: Int
 )
