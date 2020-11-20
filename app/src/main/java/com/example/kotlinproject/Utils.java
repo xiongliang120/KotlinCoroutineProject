@@ -22,6 +22,6 @@ public  class Utils {
      * 获取内部类和静态内部类的方法
      */
     public static void getJavaInnerMethod(){
-        o
+        OutClass outClass = new OutClass();
     }
 }

@@ -4,8 +4,11 @@ import android.util.Log;
 
 /***
  * 成员内部类:
+ * 外部类实例的部分,依托外部实例存在,与实例变量、实例方法同级别;
+ * 成员内部类不能定义静态成员.
  *
  * 静态内部类:
+ * 静态内部类可以定义静态成员
  *
  * 局部内部类:
  *
@@ -16,9 +19,13 @@ public class OutterClass {
     private String name = "xiongliang";
 
 
-    public static void print(){
+    public static void print1(){
 
     }
+
+    public void print4(){
+    }
+
 
     /**
      * 非静态内部类
@@ -27,12 +34,13 @@ public class OutterClass {
         private int age =29;
 
         public void getInnerMethod(){
+            print4();
             Log.i("xiongliang","获取内部类的方法");
         }
 
-        public static void print(){
-
-        }
+//        public static void print2(){
+//
+//        }
     }
 
     /**
@@ -41,11 +49,12 @@ public class OutterClass {
     static class StaticInnerClass{
          private String country = "wuhan";
 
-         public static void print(){
-
+         public static void print3(){
+             print1();
          }
 
          public void getCountry(){
+             print1();
              Log.i("xiongliang","获取城市="+country);
          }
     }

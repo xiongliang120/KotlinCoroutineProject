@@ -22,7 +22,8 @@ class CommonActivity : AppCompatActivity() {
 //        method6()
 //        method7()
 //        method8()
-        method9()
+//        method9()
+        method10()
     }
 
     /**
@@ -198,6 +199,8 @@ class CommonActivity : AppCompatActivity() {
 
 //        var item:String = Utils.getText()
 //        Log.i("xiongliang","打印item="+item)
+
+        var outClass = OutClass()
 
 
         var num1s = arrayOf(1,2,3)  //装箱数组 Integer[]
