@@ -176,7 +176,7 @@ class CommonActivity : AppCompatActivity() {
 
     /**
      * 嵌套类和内部类
-     * 依次调用: 嵌套类,内部类, 伴生对象,调用方式不一样.
+     * 依次调用: 嵌套类,内部类, 伴生对象,调用方式不一样,因为其内部的实现不一样.
      *
      */
     fun method9(){
@@ -628,7 +628,7 @@ class MapDelegate(map:Map<String,Any>){
 
 
 //lamda 表达式
-fun lamdaExpress(a:Int, b:Int, compute: (x:Int,y:Int)->Unit){
+@JvmOverloads fun lamdaExpress(a:Int=9, b:Int, compute: (x:Int, y:Int)->Unit){
     compute(a,b)
 }
 
