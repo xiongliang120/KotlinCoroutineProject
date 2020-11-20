@@ -17,4 +17,11 @@ public  class Utils {
 //        CommonActivityKt commonActivityKt = new CommonActivityKt();
         return ""+ CommonActivityKt.getInitAge();
     }
+
+    /**
+     * 获取内部类和静态内部类的方法
+     */
+    public static void getJavaInnerMethod(){
+        o
+    }
 }
