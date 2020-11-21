@@ -11,6 +11,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.functions
 
 /**
@@ -27,9 +28,9 @@ class CommonActivity : AppCompatActivity() {
 //        method6()
 //        method7()
 //        method8()
-//        method9()
+        method9()
 //        method10()
-        method11()
+//        method11()
 //        method12()
     }
 
@@ -190,7 +191,8 @@ class CommonActivity : AppCompatActivity() {
     fun method9(){
         OutClass.NestClass().foo()
         OutClass().InnerClass().foo()
-        Log.i("xiongliang","打印伴生对象的值="+Home1.Instance.instanceName)
+        Log.i("xiongliang","打印伴生对象的变量值="+Home1.instanceName)
+        Log.i("xiongliang","打印伴生对象的方法="+Home1.Instance.getName())
     }
 
     /**
@@ -246,6 +248,7 @@ class CommonActivity : AppCompatActivity() {
         Log.i("xiongliang","打印Student printUserAge.call="+Student::printUserAge.call(Student("78",29),2))
         Log.i("xiongliang","--------------------")
         Log.i("xiongliang","打印伴生对象="+Home1::class.companionObject)
+
 
     }
 
@@ -356,7 +359,6 @@ class Home1 : Home {
     companion object Instance {
         var instanceName: String = ""
 
-        @JvmStatic
         fun getName(): String {
             return instanceName
         }
