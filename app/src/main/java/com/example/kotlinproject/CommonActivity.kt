@@ -9,6 +9,9 @@ import kotlin.jvm.Throws
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.companionObject
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.functions
 
 /**
  * 基础语法练习
@@ -25,7 +28,9 @@ class CommonActivity : AppCompatActivity() {
 //        method7()
 //        method8()
 //        method9()
-        method10()
+//        method10()
+        method11()
+//        method12()
     }
 
     /**
@@ -213,6 +218,47 @@ class CommonActivity : AppCompatActivity() {
         Log.i("xiongliang","打印class类型 ${EmptyClass("11").javaClass}")
     }
 
+    /**
+     * 反射
+     */
+    fun method11(){
+        Log.i("xiongliang","获取KClasss实例"+ String::class)
+        Log.i("xiongliang","获取class " +
+                ""+String::class.java)
+        Log.i("xiongliang","------------------------------")
+        Log.i("xiongliang","获取对象实例的KClass"+String()::class)
+        Log.i("xiongliang","获取对象实例的Class"+ String()::class.java)
+
+        Log.i("xiongliang","打印initAge="+ ::initAge.get())
+        Log.i("xiongliang","打印 Student Age="+ Student::age+",其值为="+Student::age.get(Student("23",1)))
+        Log.i("xiongliang","--------------------")
+        Log.i("xiongliang","打印构造方法引用="+::Student)
+//        Log.i("xiongliang","打印Student 创建默认参数的对象="+Student::class.createInstance())
+        //通过构造方法创建对象
+        Student::class.constructors.forEach {
+            if(it.parameters.size==2){
+                var instance = it.call("xiongliang",56)
+                Log.i("xiongliang","打印构造函数创建对象="+instance.age)
+            }
+        }
+        Log.i("xiongliang","--------------------")
+        Log.i("xiongliang","打印Student printUserNam.invoke="+ Student::printUserName.invoke(Student("56",29)))
+        Log.i("xiongliang","打印Student printUserAge.call="+Student::printUserAge.call(Student("78",29),2))
+        Log.i("xiongliang","--------------------")
+        Log.i("xiongliang","打印伴生对象="+Home1::class.companionObject)
+
+    }
+
+    /**
+     * 函数组合
+     */
+    fun method12(){
+        val lists = listOf("adb","ad","sdff","sdfff")
+        val eventLength = combinaFun(::function1, ::function2)
+        lists.filter(eventLength).forEach {
+            Log.i("xiongliang","打印item="+it)
+        }
+    }
 
 
 }
@@ -248,6 +294,10 @@ open class Student(var userName: String, var age: Int = 2) {
 
     fun printUserName() {
         Log.i("xiongliang", "方法调用 userName=" + userName + "age=" + age)
+    }
+
+    fun printUserAge(age:Int){
+        Log.i("xiongliang","打印 printUserAge= "+age)
     }
 
     open fun print() {
@@ -661,3 +711,13 @@ fun kotlinThrowException(){
     System.out.println("调用KotlinThrowException")
     throw FileNotFoundException()
 }
+
+//函数组合
+fun <A,B,C> combinaFun(fun1:(A)->B,fun2:(C)->A):(C)->B{
+    return {x->fun1(fun2(x))}
+}
+
+fun function1(num:Int) = (0==num%2)
+
+fun function2(str:String) = str.length
+
