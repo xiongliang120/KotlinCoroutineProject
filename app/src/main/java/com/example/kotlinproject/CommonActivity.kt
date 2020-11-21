@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import java.io.FileInputStream
+import java.io.FileNotFoundException
+import kotlin.jvm.Throws
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
@@ -653,3 +655,9 @@ fun varargParam1(nums:Int = 9,vararg params:String){
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 annotation class MyAnnotation(val str:String,val argClass:KClass<*>)
+
+@Throws(FileNotFoundException::class)
+fun kotlinThrowException(){
+    System.out.println("调用KotlinThrowException")
+    throw FileNotFoundException()
+}

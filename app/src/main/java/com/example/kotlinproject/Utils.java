@@ -1,6 +1,5 @@
 package com.example.kotlinproject;
 
-import kotlin.reflect.KFunction;
 
 public  class Utils {
     public static String getText(){
@@ -22,6 +21,17 @@ public  class Utils {
      * 获取内部类和静态内部类的方法
      */
     public static void getJavaInnerMethod(){
-        OutClass outClass = new OutClass();
+        OutterClass outterClass = new OutterClass();
+        //访问内部类
+        OutterClass.InnnerClass innnerClass = outterClass.new InnnerClass();
+        innnerClass.getInnerMethod();
+        //假设可以定义静态
+//        OutterClass.InnnerClass.print2();
+
+        //访问静态内部类
+        OutterClass.StaticInnerClass staticInnerClass = new OutterClass.StaticInnerClass();
+        staticInnerClass.getCountry();
+        OutterClass.StaticInnerClass.print3();
+
     }
 }
