@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
-//        createCoroutine()
+        createCoroutine()
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
 //        createCoroutine3()
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
 //        changeThreadLocal()
-        createFlow()
+//        createFlow()
 //        cancelFlow()
 //        flowOperator()
 //        loopCallMethod()
@@ -67,16 +67,22 @@ class MainActivity : AppCompatActivity() {
      *
      */
     fun createCoroutine() {
-        var job = GlobalScope.launch(Dispatchers.Unconfined) {
-            delay(3000)
-            nameButton?.post {
-                nameButton?.setText("xiongliang")
-            }
+        var job = GlobalScope.launch {
             Log.i("xiongliang", " Thread name11 " + Thread.currentThread().name)
+            delay(3000)
+            Log.i("xiongliang", " Thread name22 " + Thread.currentThread().name)
+//            launch(Dispatchers.Main) {
+//                Log.i("xiongliang", " Thread name33 " + Thread.currentThread().name)
+//            }
+
+            withContext(Dispatchers.Main){
+                delay(1000)
+                Log.i("xiongliang", " Thread test33 " + Thread.currentThread().name)
+            }
+
+            Log.i("xiongliang", "Thread name44 " + Thread.currentThread().name)
         }
-
-
-        Log.i("xiongliang", "Thread name22 " + Thread.currentThread().name)
+        Log.i("xiongliang", "Thread name55 " + Thread.currentThread().name)
     }
 
     /**
