@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
-        createCoroutine()
+//        createCoroutine()
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
 //        createCoroutine3()
@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
 //        changeThreadLocal()
+        testCoroutineJob()
 //        createFlow()
 //        cancelFlow()
 //        flowOperator()
@@ -89,8 +90,10 @@ class MainActivity : AppCompatActivity() {
      * 通过runBlocking 创建协程
      */
     fun createCoroutineBlock() = runBlocking {
+        Log.i("xiongliang", "00000")
         delay(timeMillis = 1000L)
         Log.i("xiongliang", "111111")
+
 
         coroutineScope {
             Log.i("xiongliang", "333333333")
@@ -158,6 +161,7 @@ class MainActivity : AppCompatActivity() {
      * 协程取消,针对计算任务
      */
     fun cancelCoroutine2() = runBlocking {
+        Log.i("xiongliang","Thread="+Thread.currentThread().name)
         var job = launch(Dispatchers.Default) {
             var i = 0
             var startTime = System.currentTimeMillis()
@@ -390,6 +394,23 @@ class MainActivity : AppCompatActivity() {
         Log.i("xiongliang", "555555555" + Thread.currentThread().name + "..." + threadLocal.get())
     }
 
+
+    /**
+     * 测试协程 Job的使用
+     * job, 一个协程会等待另一个协程执行完毕后再执行
+     */
+    fun testCoroutineJob() = runBlocking {
+          var job = launch{
+              delay(2000)
+              Log.i("xiongliang","welcome")
+          }
+
+          Log.i("xiongliang","Hello")
+          job.join()
+          Log.i("xiongliang","workld")
+    }
+
+
     /***
      * 创建Flow
      */
@@ -495,10 +516,15 @@ class MainActivity : AppCompatActivity() {
     /**
      * 循环递归的调用挂起函数
      */
-    fun loopCallMethod() = GlobalScope.launch {
-        while (true) {
-            callMethod1()
+    fun loopCallMethod() {
+        GlobalScope.launch {
+            Log.i("xiongliang","0000000")
+            while (true) {
+                callMethod1()
+            }
+            Log.i("xiongliang","111111111")
         }
+        Log.i("xiongliang","2222222")
     }
 
 
@@ -531,8 +557,8 @@ class MainActivity : AppCompatActivity() {
     /**
      * 挂起函数
      */
-    suspend fun initValue1(): Int {
-        delay(2000)
+     fun initValue1(): Int {
+//        delay(2000)
         return 20
     }
 
