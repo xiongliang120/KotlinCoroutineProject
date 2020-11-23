@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
 //        changeThreadLocal()
-//        testCoroutineJob()
-        createFlow()
+        testCoroutineJob()
+//        createFlow()
 //        cancelFlow()
 //        flowOperator()
 //        loopCallMethod()
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
      * 协程取消和超时,清理操作放在finally 中
      */
     fun cancelCoroutine() = runBlocking {
-        var job = launch() {
+        var job = launch{
             try {
                 repeat(20) {
                     Log.i("xiongliang", "index=" + it)
@@ -413,8 +413,12 @@ class MainActivity : AppCompatActivity() {
      * job, 一个协程会等待另一个协程执行完毕后再执行
      */
     fun testCoroutineJob() = runBlocking {
+          Log.i("xiongliang","1111 Thread name="+Thread.currentThread().name)
+          initValue1()
           var job = launch{
+              Log.i("xiongliang","2222222 Thread name="+Thread.currentThread().name)
               delay(2000)
+              Log.i("xiongliang","3333333 Thread name="+Thread.currentThread().name)
               Log.i("xiongliang","welcome")
           }
 

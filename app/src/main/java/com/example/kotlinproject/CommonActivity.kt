@@ -38,8 +38,9 @@ class CommonActivity : AppCompatActivity() {
      * 遍历数组
      */
     fun method1() {
-        var array = intArrayOf(1, 2, 4, 5)
-        var strings = arrayListOf<String>("hello", "world", "list", "test")
+        var array = intArrayOf(1, 2, 4, 5) // 数组int[]
+        var array1 = arrayOf(1,2,3,4) //数组Interger[]
+        var strings = arrayListOf<String>("hello", "world", "list", "test") //集合ArrayList<String>
         for (i in array.indices) {
             Log.i("xiongliang", "打印index=" + i + "value=" + array[i])
         }
@@ -181,6 +182,7 @@ class CommonActivity : AppCompatActivity() {
      */
     @MyAnnotation("hello",Int::class)
     fun method8(){
+        Any
     }
 
     /**
