@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
 //        changeThreadLocal()
-        testCoroutineJob()
-//        createFlow()
+//        testCoroutineJob()
+        createFlow()
 //        cancelFlow()
 //        flowOperator()
 //        loopCallMethod()
@@ -87,16 +87,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * 通过runBlocking 创建协程
+     * coroutineScope 创建协程作用域, 协程等待该协程作用域返回
      */
     fun createCoroutineBlock() = runBlocking {
         Log.i("xiongliang", "00000")
         delay(timeMillis = 1000L)
-        Log.i("xiongliang", "111111")
+        Log.i("xiongliang", "111111 Thread name="+Thread.currentThread().name)
 
 
         coroutineScope {
-            Log.i("xiongliang", "333333333")
+            Log.i("xiongliang", "333333333 Thread name="+Thread.currentThread().name)
             delay(2000)
         }
         Log.i("xiongliang", "22222222")
@@ -229,8 +229,11 @@ class MainActivity : AppCompatActivity() {
             var time1 = async { initValue1() }
             var time2 = async { initValue2() }
 
+            Log.i("xiongliang","00000")
             var result1 = time1.await()
+            Log.i("xiongliang","1111111")
             var result2 = time2.await()
+            Log.i("xiongliang","2222222")
 
             Log.i("xiongliang", "打印函数结果=" + (result1 + result2))
         }
@@ -279,6 +282,7 @@ class MainActivity : AppCompatActivity() {
      * 线程池 -- 创建线程池,执行协程代码,并需要关闭协程分发器dispatcher.close().
      */
     fun createCoroutineDispatcher() = runBlocking {
+        Log.i("xiongliang","打印 runBlocking的Thread name="+Thread.currentThread().name)
         launch {
             Log.i("xiongliang", "缺省 Thread name " + Thread.currentThread().name)
         }
@@ -371,27 +375,36 @@ class MainActivity : AppCompatActivity() {
 
     val threadLocal = ThreadLocal<String>()
     fun changeThreadLocal() {
-        runBlocking {
+        GlobalScope.launch {
             threadLocal.set("helllo")
             Log.i("xiongliang", "1111.." + Thread.currentThread().name + "..." + threadLocal.get())
-            var job = launch(Dispatchers.Default + threadLocal.asContextElement("world")) {
+            var job = launch(Dispatchers.Default+ threadLocal.asContextElement("world")) {
                 Log.i(
                     "xiongliang",
                     "22222.." + Thread.currentThread().name + "..." + threadLocal.get()
                 )
-                yield()
+                withContext(Dispatchers.Main){
+                    Log.i(
+                        "xiongliang",
+                        "aaaaa.." + Thread.currentThread().name + "..." + threadLocal.get()
+                    )
+
+                    initValue1()
+                }
+
+
                 Log.i(
                     "xiongliang",
                     "33333.." + Thread.currentThread().name + "..." + threadLocal.get()
                 )
                 delay(2000)
             }
-
-            job.join()
             Log.i("xiongliang", "44444.." + Thread.currentThread().name + "..." + threadLocal.get())
+            job.join()
+            Log.i("xiongliang", "5555555.." + Thread.currentThread().name + "..." + threadLocal.get())
         }
 
-        Log.i("xiongliang", "555555555" + Thread.currentThread().name + "..." + threadLocal.get())
+        Log.i("xiongliang", "66666666" + Thread.currentThread().name + "..." + threadLocal.get())
     }
 
 
@@ -415,12 +428,6 @@ class MainActivity : AppCompatActivity() {
      * 创建Flow
      */
     fun createFlow() = runBlocking {
-        launch {
-            for (i in 1..4) {
-                delay(200)
-                Log.i("xiongliang", "hello" + i)
-            }
-        }
 //        flowMethod().collect {
 //            Log.i("xiongliang","打印i="+it)
 //        }
@@ -479,7 +486,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    /**
+     * 捕获异常
+     * catch, onCompletion 均可捕获异常, 不过只能捕获上游异常
+     */
     fun flowCompeletion() = runBlocking {
         flowMethod1().onCompletion {
             Log.i("xiongliang","flow  完成")
@@ -557,8 +567,12 @@ class MainActivity : AppCompatActivity() {
     /**
      * 挂起函数
      */
-     fun initValue1(): Int {
-//        delay(2000)
+    suspend  fun initValue1(): Int {
+        delay(2000)
+        Log.i(
+            "xiongliang",
+            "打印挂起函数中的线程值.." + Thread.currentThread().name + "..." + threadLocal.get()
+        )
         return 20
     }
 
