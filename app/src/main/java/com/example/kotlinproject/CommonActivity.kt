@@ -22,13 +22,13 @@ class CommonActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        method1()
 //        method2()
-//        method3()
+        method3()
 //        method4()
 //        method5()
 //        method6()
 //        method7()
 //        method8()
-        method9()
+//        method9()
 //        method10()
 //        method11()
 //        method12()
@@ -194,6 +194,7 @@ class CommonActivity : AppCompatActivity() {
         OutClass().InnerClass().foo()
         Log.i("xiongliang","打印伴生对象的变量值="+Home1.instanceName)
         Log.i("xiongliang","打印伴生对象的方法="+Home1.Instance.getName1())
+        Home1().age = "11"
     }
 
     /**
@@ -522,6 +523,8 @@ data class Person(
     val age: Int
 )
 
+data class Person1(var name:String ="1",var age:Int)
+
 sealed class Calucator
 
 class AddCalucator() : Calucator()
@@ -581,14 +584,14 @@ class Boy : Comsumer<YelloCat> {
 class OutClass {
     var name: String = ""
 
-    //嵌套类
+    //嵌套类,类似java 静态内部类
     class NestClass {
         fun foo() {
             Log.i("xiongliang", "嵌套类=")
         }
     }
 
-    //内部类
+    //内部类, 类似java非静态内部类
     inner class InnerClass {
         fun foo() {
             Log.i("xiongliang", "内部类" + this@OutClass.name)
