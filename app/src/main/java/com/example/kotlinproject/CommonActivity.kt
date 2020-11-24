@@ -182,7 +182,6 @@ class CommonActivity : AppCompatActivity() {
      */
     @MyAnnotation("hello",Int::class)
     fun method8(){
-        Any
     }
 
     /**
@@ -194,7 +193,7 @@ class CommonActivity : AppCompatActivity() {
         OutClass.NestClass().foo()
         OutClass().InnerClass().foo()
         Log.i("xiongliang","打印伴生对象的变量值="+Home1.instanceName)
-        Log.i("xiongliang","打印伴生对象的方法="+Home1.Instance.getName())
+        Log.i("xiongliang","打印伴生对象的方法="+Home1.Instance.getName1())
     }
 
     /**
@@ -361,8 +360,8 @@ class Home1 : Home {
     companion object Instance {
         var instanceName: String = ""
 
-        fun getName(): String {
-            return instanceName
+        fun getName1(): String {
+            return "instanceName"
         }
     }
 
@@ -654,6 +653,9 @@ class PropertyDelege {
 }
 
 class PropertyClass {
+    //属性延迟初始化,只能是类属性,并且是对象.
+    lateinit var country:String
+
     var name: String by PropertyDelege()
 
     //非空属性
@@ -672,7 +674,7 @@ class PropertyClass {
     }
 }
 
-//延迟属性
+//延迟属性, 只能通过val 修饰
 val initAge:Int by lazy(LazyThreadSafetyMode.NONE) {
     Log.i("xiongliang","lazy  age")
     29

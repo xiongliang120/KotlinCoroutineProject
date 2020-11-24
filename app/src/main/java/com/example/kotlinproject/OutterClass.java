@@ -53,7 +53,7 @@ public class OutterClass {
              print1();
          }
 
-         public void getCountry(){
+         public final  void getCountry(){
              print1();
              Log.i("xiongliang","获取城市="+country);
          }
