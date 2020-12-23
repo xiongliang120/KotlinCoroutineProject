@@ -18,6 +18,8 @@ import android.util.Log;
 public class OutterClass {
     private String name = "xiongliang";
 
+    public static String counrty = "city";
+
 
     public static void print1(){
 
@@ -32,6 +34,8 @@ public class OutterClass {
      */
     class InnnerClass{
         private int age =29;
+
+
 
         public void getInnerMethod(){
             print4();

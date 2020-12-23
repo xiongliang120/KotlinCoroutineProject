@@ -1,10 +1,12 @@
 package com.example.kotlinproject
 
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.jvm.Throws
 import kotlin.properties.Delegates
 import kotlin.reflect.KClass
@@ -22,16 +24,45 @@ class CommonActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 //        method1()
 //        method2()
-        method3()
+//        method3()
 //        method4()
 //        method5()
 //        method6()
 //        method7()
 //        method8()
 //        method9()
-//        method10()
+        method10()
 //        method11()
 //        method12()
+//        testThread()
+    }
+
+    /**
+     * 测试线程
+     */
+    fun testThread() {
+        AtomicInteger().incrementAndGet()
+        var n = 0
+        for (index in 0..3) {
+            var thread = Thread(object : Runnable {
+                override fun run() {
+                    for (i in 0..1000) {
+                        synchronized(CommonActivity::testThread){
+                            n++
+                            Log.i("xiongliang","打印Thread name="+Thread.currentThread().name +"n的值="+n)
+                        }
+                    }
+                }
+
+            })
+            thread.start()
+        }
+
+        Handler().postDelayed(object:Runnable{
+            override fun run() {
+                Log.i("xiongliang","打印n="+n)
+            }
+        },1000*10)
     }
 
     /**
@@ -39,7 +70,7 @@ class CommonActivity : AppCompatActivity() {
      */
     fun method1() {
         var array = intArrayOf(1, 2, 4, 5) // 数组int[]
-        var array1 = arrayOf(1,2,3,4) //数组Interger[]
+        var array1 = arrayOf(1, 2, 3, 4) //数组Interger[]
         var strings = arrayListOf<String>("hello", "world", "list", "test") //集合ArrayList<String>
         for (i in array.indices) {
             Log.i("xiongliang", "打印index=" + i + "value=" + array[i])
@@ -122,66 +153,66 @@ class CommonActivity : AppCompatActivity() {
     /**
      * 测试lamda 表达式
      */
-    fun method7(){
-        lamdaExpress(1,2){  x,y->
-            Log.i("xiongliang","执行lamda 表达式")
-            Log.i("xiongliang","打印x+y="+x+y)
+    fun method7() {
+        lamdaExpress(1, 2) { x, y ->
+            Log.i("xiongliang", "执行lamda 表达式")
+            Log.i("xiongliang", "打印x+y=" + x + y)
         }
         //可变参数
-        varargParam("1","2","3")
-        varargParam1(params = *arrayOf("1","2"))
+        varargParam("1", "2", "3")
+        varargParam1(params = *arrayOf("1", "2"))
 
         var propertyClass = PropertyClass()
         //中缀方法调用
-        propertyClass infixFun(9)
+        propertyClass infixFun (9)
 
         //高阶函数
-        var add:(Int,Int)->Int= {a, b ->  a+b}
-        var subtract = {a:Int,b:Int -> a-b}
+        var add: (Int, Int) -> Int = { a, b -> a + b }
+        var subtract = { a: Int, b: Int -> a - b }
 
-        Log.i("xiongliang","高阶函数add="+add(1,2))
-        Log.i("xiongliang","高阶函数subtract="+subtract(1,2))
+        Log.i("xiongliang", "高阶函数add=" + add(1, 2))
+        Log.i("xiongliang", "高阶函数subtract=" + subtract(1, 2))
 
         var str = "abcd456fssdf"
         var result = str.filter {
-            if(it >= 'a' && it <= 'z'){
-                 return@filter true
+            if (it >= 'a' && it <= 'z') {
+                return@filter true
             }
             return@filter false
         }
-        Log.i("xiongliang","打印扩展String = "+result)
+        Log.i("xiongliang", "打印扩展String = " + result)
 
         var sum = ""
-        var strings = arrayOf("hello","world","helloD","welcome")
-        strings.filter { it.contains("d",ignoreCase = true) }.map { it.toUpperCase() }.forEach{
+        var strings = arrayOf("hello", "world", "helloD", "welcome")
+        strings.filter { it.contains("d", ignoreCase = true) }.map { it.toUpperCase() }.forEach {
             sum += it
-            Log.i("xiongliang","打印字符串="+it)
+            Log.i("xiongliang", "打印字符串=" + it)
         }
         //闭包使用
-        Log.i("xiongliang","打印闭包操作sum="+sum)
+        Log.i("xiongliang", "打印闭包操作sum=" + sum)
 
         //函数字面值
-        val numSubtract: Int.(other:Int)->Int = {
-            other ->  this-other
+        val numSubtract: Int.(other: Int) -> Int = { other ->
+            this - other
         }
-        Log.i("xiongliang","打印字面值="+1.numSubtract(3))
+        Log.i("xiongliang", "打印字面值=" + 1.numSubtract(3))
 
         //解构声明
-        var(name1,age1) = Person("xiongliang",29)
-        var(name2,age2) = Pair("xiongliang",20)
-        Log.i("xiongliang","打印解构声明  name1= $name1 age1 $age1")
-        Log.i("xiongliang","打印解构声明 pair name2= $name2 age2 $age2")
-        var map2 = mapOf("a" to "aa","b" to "bb","c" to "cc")
-        map2.mapValues { (key,value)-> "$value hello" }.forEach {
-            Log.i("xiongliang","解构声明 调用map="+it.value)
+        var (name1, age1) = Person("xiongliang", 29)
+        var (name2, age2) = Pair("xiongliang", 20)
+        Log.i("xiongliang", "打印解构声明  name1= $name1 age1 $age1")
+        Log.i("xiongliang", "打印解构声明 pair name2= $name2 age2 $age2")
+        var map2 = mapOf("a" to "aa", "b" to "bb", "c" to "cc")
+        map2.mapValues { (key, value) -> "$value hello" }.forEach {
+            Log.i("xiongliang", "解构声明 调用map=" + it.value)
         }
     }
 
     /***
      * 测试注解
      */
-    @MyAnnotation("hello",Int::class)
-    fun method8(){
+    @MyAnnotation("hello", Int::class)
+    fun method8() {
     }
 
     /**
@@ -189,67 +220,79 @@ class CommonActivity : AppCompatActivity() {
      * 依次调用: 嵌套类,内部类, 伴生对象,调用方式不一样,因为其内部的实现不一样.
      *
      */
-    fun method9(){
+    fun method9() {
         OutClass.NestClass().foo()
         OutClass().InnerClass().foo()
-        Log.i("xiongliang","打印伴生对象的变量值="+Home1.instanceName)
-        Log.i("xiongliang","打印伴生对象的方法="+Home1.Instance.getName1())
+        Log.i("xiongliang", "打印伴生对象的变量值=" + Home1.instanceName)
+        Log.i("xiongliang", "打印伴生对象的方法=" + Home1.Instance.getName1())
         Home1().age = "11"
     }
 
     /**
      * kotlin 与 java 互调
      */
-    fun method10(){
+    fun method10() {
         var list = ArrayList<String>()  //java 集合方式
         list.add("1")
         list.add("2")
-        for (item in list){
-            Log.i("xiongliang","打印item="+item)
+        for (item in list) {
+            Log.i("xiongliang", "打印item=" + item)
         }
 
 //        var item:String = Utils.getText()
+        Utils.getJavaInnerMethod()
 //        Log.i("xiongliang","打印item="+item)
 
         var outClass = OutClass()
 
 
-        var num1s = arrayOf(1,2,3)  //装箱数组 Integer[]
-        var num2s = intArrayOf(1,2,3)  //原生数组int[]
+        var num1s = arrayOf(1, 2, 3)  //装箱数组 Integer[]
+        var num2s = intArrayOf(1, 2, 3)  //原生数组int[]
 //        var num3s:Array<Any> = num2s  //kotlin 不允许变化,java 允许
 
-        Log.i("xiongliang","打印class类型 ${EmptyClass("11")::class.java}")
-        Log.i("xiongliang","打印class类型 ${EmptyClass("11").javaClass}")
+        Log.i("xiongliang", "打印class类型 ${EmptyClass("11")::class.java}")
+        Log.i("xiongliang", "打印class类型 ${EmptyClass("11").javaClass}")
     }
 
     /**
      * 反射
      */
-    fun method11(){
-        Log.i("xiongliang","获取KClasss实例"+ String::class)
-        Log.i("xiongliang","获取class " +
-                ""+String::class.java)
-        Log.i("xiongliang","------------------------------")
-        Log.i("xiongliang","获取对象实例的KClass"+String()::class)
-        Log.i("xiongliang","获取对象实例的Class"+ String()::class.java)
+    fun method11() {
+        Log.i("xiongliang", "获取KClasss实例" + String::class)
+        Log.i(
+            "xiongliang", "获取class " +
+                    "" + String::class.java
+        )
+        Log.i("xiongliang", "------------------------------")
+        Log.i("xiongliang", "获取对象实例的KClass" + String()::class)
+        Log.i("xiongliang", "获取对象实例的Class" + String()::class.java)
 
-        Log.i("xiongliang","打印initAge="+ ::initAge.get())
-        Log.i("xiongliang","打印 Student Age="+ Student::age+",其值为="+Student::age.get(Student("23",1)))
-        Log.i("xiongliang","--------------------")
-        Log.i("xiongliang","打印构造方法引用="+::Student)
+        Log.i("xiongliang", "打印initAge=" + ::initAge.get())
+        Log.i(
+            "xiongliang",
+            "打印 Student Age=" + Student::age + ",其值为=" + Student::age.get(Student("23", 1))
+        )
+        Log.i("xiongliang", "--------------------")
+        Log.i("xiongliang", "打印构造方法引用=" + ::Student)
 //        Log.i("xiongliang","打印Student 创建默认参数的对象="+Student::class.createInstance())
         //通过构造方法创建对象
         Student::class.constructors.forEach {
-            if(it.parameters.size==2){
-                var instance = it.call("xiongliang",56)
-                Log.i("xiongliang","打印构造函数创建对象="+instance.age)
+            if (it.parameters.size == 2) {
+                var instance = it.call("xiongliang", 56)
+                Log.i("xiongliang", "打印构造函数创建对象=" + instance.age)
             }
         }
-        Log.i("xiongliang","--------------------")
-        Log.i("xiongliang","打印Student printUserNam.invoke="+ Student::printUserName.invoke(Student("56",29)))
-        Log.i("xiongliang","打印Student printUserAge.call="+Student::printUserAge.call(Student("78",29),2))
-        Log.i("xiongliang","--------------------")
-        Log.i("xiongliang","打印伴生对象="+Home1::class.companionObject)
+        Log.i("xiongliang", "--------------------")
+        Log.i(
+            "xiongliang",
+            "打印Student printUserNam.invoke=" + Student::printUserName.invoke(Student("56", 29))
+        )
+        Log.i(
+            "xiongliang",
+            "打印Student printUserAge.call=" + Student::printUserAge.call(Student("78", 29), 2)
+        )
+        Log.i("xiongliang", "--------------------")
+        Log.i("xiongliang", "打印伴生对象=" + Home1::class.companionObject)
 
 
     }
@@ -257,11 +300,11 @@ class CommonActivity : AppCompatActivity() {
     /**
      * 函数组合
      */
-    fun method12(){
-        val lists = listOf("adb","ad","sdff","sdfff")
+    fun method12() {
+        val lists = listOf("adb", "ad", "sdff", "sdfff")
         val eventLength = combinaFun(::function1, ::function2)
         lists.filter(eventLength).forEach {
-            Log.i("xiongliang","打印item="+it)
+            Log.i("xiongliang", "打印item=" + it)
         }
     }
 
@@ -301,8 +344,8 @@ open class Student(var userName: String, var age: Int = 2) {
         Log.i("xiongliang", "方法调用 userName=" + userName + "age=" + age)
     }
 
-    fun printUserAge(age:Int){
-        Log.i("xiongliang","打印 printUserAge= "+age)
+    fun printUserAge(age: Int) {
+        Log.i("xiongliang", "打印 printUserAge= " + age)
     }
 
     open fun print() {
@@ -335,11 +378,11 @@ class ChildStudent : Student {
 //扩展方法
 fun ChildStudent.mutifyCalucate(a: Int, b: Int) = a * b
 
-fun String.filter(predicate: (Char)->Boolean):String{
+fun String.filter(predicate: (Char) -> Boolean): String {
 
-    var result:StringBuffer = StringBuffer()
-    for (index in 0 until length){  //不包括length
-        if(predicate(get(index))){
+    var result: StringBuffer = StringBuffer()
+    for (index in 0 until length) {  //不包括length
+        if (predicate(get(index))) {
             result.append(get(index))
         }
     }
@@ -459,6 +502,9 @@ class Home1 : Home {
 
     /**
      * 对象表达式
+     * 可以实现多个接口,也可以不实现接口.
+     * 可以直接访问外部变量, 不用定义为final
+     *
      */
     fun objectExpress() {
         var name: String = ""
@@ -497,21 +543,26 @@ class Home1 : Home {
         propertyClass.name = "xiongliang"
         Log.i("xiongliang", "属性委托=" + propertyClass.name)
 
-        Log.i("xiongliang","打印延迟属性委托="+ initAge)
-        Log.i("xiongliang","打印延迟属性委托="+ initAge)
+        Log.i("xiongliang", "打印延迟属性委托=" + initAge)
+        Log.i("xiongliang", "打印延迟属性委托=" + initAge)
 
         propertyClass.age = 29
-        Log.i("xiongliang","打印非空属性委托Property.age="+propertyClass.age)
+        Log.i("xiongliang", "打印非空属性委托Property.age=" + propertyClass.age)
 
         propertyClass.observableAge = 50
-        Log.i("xiongliang","打印可观测属性委托 observableAge="+propertyClass.observableAge)
+        Log.i("xiongliang", "打印可观测属性委托 observableAge=" + propertyClass.observableAge)
 
-        var mapDelegate = MapDelegate(mapOf(
-            "name" to "xiongliang",
-            "age" to 29,
-            "address" to "xiaotao"
-        ))
-        Log.i("xiongliang","打印 name= ${mapDelegate.name} age= ${mapDelegate.age} address=${mapDelegate.address}")
+        var mapDelegate = MapDelegate(
+            mapOf(
+                "name" to "xiongliang",
+                "age" to 29,
+                "address" to "xiaotao"
+            )
+        )
+        Log.i(
+            "xiongliang",
+            "打印 name= ${mapDelegate.name} age= ${mapDelegate.age} address=${mapDelegate.address}"
+        )
     }
 
 }
@@ -523,7 +574,7 @@ data class Person(
     val age: Int
 )
 
-data class Person1(var name:String ="1",var age:Int)
+data class Person1(var name: String = "1", var age: Int)
 
 sealed class Calucator
 
@@ -623,7 +674,7 @@ enum class Season(var template: Int) {
         }
     };
 
-    abstract fun print();
+    abstract fun print()
 }
 
 
@@ -657,55 +708,55 @@ class PropertyDelege {
 
 class PropertyClass {
     //属性延迟初始化,只能是类属性,并且是对象.
-    lateinit var country:String
+    lateinit var country: String
 
     var name: String by PropertyDelege()
 
     //非空属性
-    var age:Int by Delegates.notNull<Int>()
+    var age: Int by Delegates.notNull<Int>()
 
-    var observableAge:Int by Delegates.observable(20){
-        property, oldValue, newValue ->
-        Log.i("xiongliang","可观测委托 property=$property oldValue=$oldValue newValue=$newValue")
+    var observableAge: Int by Delegates.observable(20) { property, oldValue, newValue ->
+        Log.i("xiongliang", "可观测委托 property=$property oldValue=$oldValue newValue=$newValue")
     }
 
     /**
      * 中缀方法
      */
-    infix fun infixFun(num:Int){
-        Log.i("xiongliang","打印中缀方法 num $num")
+    infix fun infixFun(num: Int) {
+        Log.i("xiongliang", "打印中缀方法 num $num")
     }
 }
 
 //延迟属性, 只能通过val 修饰
-val initAge:Int by lazy(LazyThreadSafetyMode.NONE) {
-    Log.i("xiongliang","lazy  age")
+val initAge: Int by lazy(LazyThreadSafetyMode.NONE) {
+    Log.i("xiongliang", "lazy  age")
     29
 }
 
 //map 委托, 只读通过map, 读写 通过mutableMap
-class MapDelegate(map:Map<String,Any>){
-   val name:String by map
-   val age:Int by map
-   val address:String by map
+class MapDelegate(map: Map<String, Any>) {
+    val name: String by map
+    val age: Int by map
+    val address: String by map
 }
 
 
 //lamda 表达式
-@JvmOverloads fun lamdaExpress(a:Int=9, b:Int, compute: (x:Int, y:Int)->Unit){
-    compute(a,b)
+@JvmOverloads
+fun lamdaExpress(a: Int = 9, b: Int, compute: (x: Int, y: Int) -> Unit) {
+    compute(a, b)
 }
 
 //可变参数, 可变参数只能呢个作为最后一个参数.
-fun varargParam(vararg params:String){
-    for (item in params){
-        Log.i("xiongliang","打印item="+item)
+fun varargParam(vararg params: String) {
+    for (item in params) {
+        Log.i("xiongliang", "打印item=" + item)
     }
 }
 
-fun varargParam1(nums:Int = 9,vararg params:String){
-    for (item in params){
-        Log.i("xiongliang","打印item="+item)
+fun varargParam1(nums: Int = 9, vararg params: String) {
+    for (item in params) {
+        Log.i("xiongliang", "打印item=" + item)
     }
 }
 
@@ -713,20 +764,20 @@ fun varargParam1(nums:Int = 9,vararg params:String){
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
-annotation class MyAnnotation(val str:String,val argClass:KClass<*>)
+annotation class MyAnnotation(val str: String, val argClass: KClass<*>)
 
 @Throws(FileNotFoundException::class)
-fun kotlinThrowException(){
+fun kotlinThrowException() {
     System.out.println("调用KotlinThrowException")
     throw FileNotFoundException()
 }
 
 //函数组合
-fun <A,B,C> combinaFun(fun1:(A)->B,fun2:(C)->A):(C)->B{
-    return {x->fun1(fun2(x))}
+fun <A, B, C> combinaFun(fun1: (A) -> B, fun2: (C) -> A): (C) -> B {
+    return { x -> fun1(fun2(x)) }
 }
 
-fun function1(num:Int) = (0==num%2)
+fun function1(num: Int) = (0 == num % 2)
 
-fun function2(str:String) = str.length
+fun function2(str: String) = str.length
 

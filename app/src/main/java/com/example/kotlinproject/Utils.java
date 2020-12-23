@@ -1,6 +1,8 @@
 package com.example.kotlinproject;
 
 
+import android.util.Log;
+
 public  class Utils {
     public static String getText(){
         return null;
@@ -22,16 +24,24 @@ public  class Utils {
      */
     public static void getJavaInnerMethod(){
         OutterClass outterClass = new OutterClass();
+        Log.i("xiongliang","打印country="+ OutterClass.counrty);
+        OutterClass.print1();
+        outterClass.print4();
+
         //访问内部类
         OutterClass.InnnerClass innnerClass = outterClass.new InnnerClass();
         innnerClass.getInnerMethod();
         //假设可以定义静态
 //        OutterClass.InnnerClass.print2();
+        Log.i("xiongliang","打印内部类的类型"+OutterClass.InnnerClass.class);
 
         //访问静态内部类
         OutterClass.StaticInnerClass staticInnerClass = new OutterClass.StaticInnerClass();
+        //访问非静态属性
         staticInnerClass.getCountry();
+        //访问静态属性
         OutterClass.StaticInnerClass.print3();
+        staticInnerClass.print3();
 
     }
 }
