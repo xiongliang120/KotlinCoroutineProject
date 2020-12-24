@@ -48,7 +48,7 @@ public class OutterClass {
     }
 
     /**
-     * 内部类
+     * 静态内部类
      */
     static class StaticInnerClass{
          private String country = "wuhan";

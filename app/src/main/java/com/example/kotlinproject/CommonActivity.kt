@@ -535,6 +535,10 @@ class Home1 : Home {
 
     /**
      * 测试委托
+     *
+     * by lazy 延迟属性委托只能应用于常量val
+     * lateinit 属性延迟初始化只能应用于变量var
+     *
      */
     fun testEntrust() {
         var myEntrust = myEntrust(Entrust()).print()
