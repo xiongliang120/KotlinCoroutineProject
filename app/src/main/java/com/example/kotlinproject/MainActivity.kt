@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
-//        createCoroutine()
+        createCoroutine()
 //        createCoroutineBlock()
 //        createCoroutinePublicScope()
 //        createCoroutine3()
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 //        createCoroutineTest()
 //        createParentChildCoroutineScope()
 //        changeThreadLocal()
-        testCoroutineJob()
+//        testCoroutineJob()
 //        createFlow()
 //        cancelFlow()
 //        flowOperator()
@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     /***
      * 创建协程
      *  GlobalScope.launch() 是无阻塞的,不会阻塞UI 线程
+     *  CoroutineScope.launch() 创建协程, GlobalScope是CoroutineScope的单例实现
+     *
      *  Job.cancel() -- 取消协程
      *  Job.join()  -- 让协程运行完
      *
@@ -84,10 +86,19 @@ class MainActivity : AppCompatActivity() {
             Log.i("xiongliang", "Thread name44 " + Thread.currentThread().name)
         }
         Log.i("xiongliang", "Thread name55 " + Thread.currentThread().name)
+
+
+        var job1 = CoroutineScope(Dispatchers.Default).launch {
+            Log.i("xiongliang","CoroutineScope 创建协程"+ Thread.currentThread().name)
+            var job2 = withContext(Dispatchers.Main){
+                Log.i("xiongliang","withContext 切换协程上下文"+Thread.currentThread().name)
+            }
+        }
     }
 
     /**
      * coroutineScope 创建协程作用域, 协程等待该协程作用域返回
+     * 可以直接理解为 挂起函数
      */
     fun createCoroutineBlock() = runBlocking {
         Log.i("xiongliang", "00000")
@@ -575,13 +586,17 @@ class MainActivity : AppCompatActivity() {
         delay(2000)
         Log.i(
             "xiongliang",
-            "打印挂起函数中的线程值.." + Thread.currentThread().name + "..." + threadLocal.get()
+            "打印 initValue1 挂起函数中的线程值.." + Thread.currentThread().name + "..." + threadLocal.get()
         )
         return 20
     }
 
     suspend fun initValue2(): Int {
         delay(3000)
+        Log.i(
+            "xiongliang",
+            "打印 initValue2 挂起函数中的线程值.." + Thread.currentThread().name + "..." + threadLocal.get()
+        )
         return 10
     }
 
