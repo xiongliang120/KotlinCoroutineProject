@@ -15,6 +15,11 @@ import kotlin.system.measureTimeMillis
 /***
  * Kotlin 协程的使用
  *
+ * 作用: 简化异步编程, 程序的异步逻辑可以在协程中顺序的表达
+ *
+ * 原理：协程通过suspend来表示挂起点, 通过状态机来处理协程的挂起和恢复. 在需要挂起时,先保存一个挂起点,然后退出方法执行挂起函数,
+ * 当挂起函数执行完毕后,通过状态机恢复之前挂起的现场.
+ *
  *
  * 参考: https://blog.csdn.net/weixin_34191845/article/details/91457625
  */
